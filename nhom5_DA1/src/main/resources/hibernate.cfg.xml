@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+
+        <!-- Kết nối SQL Server -->
+        <property name="hibernate.dialect">org.hibernate.dialect.SQLServer2016Dialect</property>
+        <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+        <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=DB_Quan_ly_may_tinh;encrypt=true;trustServerCertificate=true;</property>
+        <property name="hibernate.connection.username">sa</property>
+        <property name="hibernate.connection.password">123456</property>
+
+        <!-- Logging -->
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.format_sql">false</property>
+
+        <!-- Entity mappings -->
+        <mapping class="demo.entity.hoa_don.HoaDon"/>
+        <mapping class="demo.entity.hoa_don.ChiTietHoaDon"/>
+        <mapping class="demo.entity.hoa_don.HinhThucThanhToan"/>
+        <mapping class="demo.entity.hoa_don.LichSuHoaDon"/>
+        <mapping class="demo.entity.hoa_don.LichSuThanhToan"/>
+        <mapping class="demo.entity.khach_hang.KhachHang"/>
+        <mapping class="demo.entity.khach_hang.DiaChiKhachHang"/>
+        <mapping class="demo.entity.khach_hang.DiaChiApiMapping"/>
+        <mapping class="demo.entity.nhan_vien.NhanVien"/>
+        <mapping class="demo.entity.san_pham.SanPham"/>
+        <mapping class="demo.entity.san_pham.CauHinhSanPham"/>
+        <mapping class="demo.entity.san_pham.ChiTietSanPham"/>
+        <mapping class="demo.entity.san_pham.ChiTietPhieuNhap"/>
+        <mapping class="demo.entity.san_pham.Cpu"/>
+        <mapping class="demo.entity.san_pham.DanhMuc"/>
+        <mapping class="demo.entity.san_pham.Gpu"/>
+        <mapping class="demo.entity.san_pham.HinhAnhSanPham"/>
+        <mapping class="demo.entity.san_pham.ManHinh"/>
+        <mapping class="demo.entity.san_pham.MaSeri"/>
+        <mapping class="demo.entity.san_pham.MauSac"/>
+        <mapping class="demo.entity.san_pham.NhaCungCap"/>
+        <mapping class="demo.entity.san_pham.OCung"/>
+        <mapping class="demo.entity.san_pham.PhieuNhap"/>
+        <mapping class="demo.entity.san_pham.Pin"/>
+        <mapping class="demo.entity.san_pham.Ram"/>
+        <mapping class="demo.entity.san_pham.ThuongHieu"/>
+
+    </session-factory>
+</hibernate-configuration>
