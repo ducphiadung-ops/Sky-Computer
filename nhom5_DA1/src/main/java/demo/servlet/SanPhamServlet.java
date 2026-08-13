@@ -545,7 +545,7 @@ public class SanPhamServlet extends HttpServlet {
         try { req.setAttribute("listSanPham",    listSanPham); }                                      catch (Exception e) { req.setAttribute("listSanPham", new ArrayList<>()); }
         try { req.setAttribute("listThuongHieu", thuongHieuRepo.getAll()); }                          catch (Exception e) { req.setAttribute("listThuongHieu", new ArrayList<>()); }
         try { req.setAttribute("listDanhMuc",    danhMucRepo.getAll()); }                             catch (Exception e) { req.setAttribute("listDanhMuc", new ArrayList<>()); }
-        try { req.setAttribute("mapSoBienThe",   ctspRepo.demBienTheTheoSanPham()); }                 catch (Exception e) { req.setAttribute("mapSoBienThe", new java.util.HashMap<>()); }
+        try { req.setAttribute("mapSoBienThe",   maSeriRepo.demImeiConHangTheoSanPham()); }            catch (Exception e) { req.setAttribute("mapSoBienThe", new java.util.HashMap<>()); }
         try { req.setAttribute("mapKhoangGia",   ctspRepo.getMinMaxDonGiaTheoSanPham()); }            catch (Exception e) { req.setAttribute("mapKhoangGia", new java.util.HashMap<>()); }
 
         req.setAttribute("priceAbsMin",     minMax[0].longValue());

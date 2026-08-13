@@ -241,6 +241,30 @@ public class MaSeriRepository {
     }
 
     /**
+     * Đếm số lượng IMEI còn hàng (trangThai = 1) theo từng sản phẩm cha.
+     * Dùng cho cột "Số lượng" trong trang quản lý sản phẩm.
+     * Trả về Map<idSanPham, soImeiConHang>
+     */
+    public java.util.Map<Integer, Long> demImeiConHangTheoSanPham() {
+        java.util.Map<Integer, Long> map = new java.util.HashMap<>();
+        try (Session session = HibernateConfig.getFACTORY().openSession()) {
+            List<Object[]> rows = session.createQuery(
+                    "SELECT ms.cauHinhSanPham.sanPham.id, COUNT(ms) " +
+                    "FROM MaSeri ms " +
+                    "WHERE ms.trangThai = 1 " +
+                    "GROUP BY ms.cauHinhSanPham.sanPham.id",
+                    Object[].class).getResultList();
+            for (Object[] row : rows) {
+                map.put((Integer) row[0], (Long) row[1]);
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Lỗi khi đếm IMEI còn hàng theo sản phẩm: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return map;
+    }
+
+    /**
      * Chuyển trạng thái IMEI thành 3 (ẩn khỏi tab IMEI / xóa giao diện).
      * Chỉ áp dụng cho IMEI đang có trang_thai = 1 (hoạt động).
      */
