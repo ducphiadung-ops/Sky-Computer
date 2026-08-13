@@ -40,11 +40,18 @@ public class HibernateConfig {
      * Hibernate 6.x + Jakarta EE 9+ + Tomcat 10+
      * Dùng connection pool mặc định (Hibernate C3P0 / built-in).
      */
+/**
+    synchronized: Đảm bảo an toàn đa luồng (Thread-safe).
+    Nếu có nhiều luồng cùng gọi getFACTORY() một lúc, chỉ 1 luồng được chạy vào trong tại một thời điểm
+    để tránh việc tạo ra 2 SessionFactory cùng lúc.
+ */
     public static synchronized SessionFactory getFACTORY() {
         if (FACTORY == null) {
             try {
                 System.out.println("[HibernateConfig] Building SessionFactory (Hibernate 6)...");
 
+                //StandardServiceRegistry chứa toàn bộ các thiết lập cấu hình của Hibernate
+                // để quản lý các dịch vụ cốt lõi (như kết nối DB, dialect,...).
                 StandardServiceRegistry ssr = new StandardServiceRegistryBuilder()
                         .applySetting("hibernate.dialect",
                                 "org.hibernate.dialect.SQLServerDialect")

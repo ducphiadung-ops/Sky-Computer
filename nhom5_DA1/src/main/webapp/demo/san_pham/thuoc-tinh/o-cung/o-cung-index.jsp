@@ -90,7 +90,7 @@
             <div class="col-md-4">
                 <div class="card card-custom p-4">
                     <h6 class="fw-bold mb-3 text-uppercase" style="font-size:13px;color:#475569;"><i class="fa-solid fa-plus me-2"></i>Thêm Ổ cứng mới</h6>
-                    <form action="${pageContext.request.contextPath}/thuoc-tinh/o-cung/them" method="POST">
+                    <form id="formThemThuocTinh" action="${pageContext.request.contextPath}/thuoc-tinh/o-cung/them" method="POST">
                         <div class="mb-3">
                             <label class="form-label">Loại ổ cứng <span class="text-danger">*</span></label>
                             <input type="text" name="tenOCung" class="form-control py-2" placeholder="Ví dụ: SSD NVMe PCIe" required>
@@ -99,7 +99,7 @@
                             <label class="form-label">Dung lượng ổ cứng</label>
                             <input type="text" name="dungLuongOCung" class="form-control py-2" placeholder="Ví dụ: 512GB, 1TB">
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 py-2 fw-medium" style="border-radius:8px;"><i class="fa-solid fa-save me-2"></i>Lưu thuộc tính</button>
+                        <button type="button" class="btn btn-primary w-100 py-2 fw-medium" style="border-radius:8px;" onclick="moModalXacNhanThem('Ổ cứng')"><i class="fa-solid fa-save me-2"></i>Lưu thuộc tính</button>
                     </form>
                 </div>
             </div>
@@ -209,6 +209,46 @@ function moModalSua(id, ten, dung) {
     document.body.appendChild(toast);
     setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3000);
 })();
+</script>
+
+<!-- ===== MODAL XÁC NHẬN THÊM THUỘC TÍNH ===== -->
+<div class="modal fade" id="modalXacNhanThemThuocTinh" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden;">
+            <div class="p-4 d-flex align-items-start gap-3">
+                <div style="width:44px;height:44px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fa-solid fa-circle-question" style="font-size:20px;color:#1a56db;"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-1" style="font-size:16px;color:#1f2937;">Xác nhận lưu thuộc tính</h5>
+                    <p id="txtXacNhanThem" class="text-secondary mb-0" style="font-size:13px;line-height:1.6;">Bạn có chắc chắn muốn thêm thuộc tính này vào hệ thống không?</p>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 px-4 pb-4">
+                <button type="button" class="btn btn-outline-secondary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="button" class="btn btn-primary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;"
+                        onclick="xacNhanThucSuThem()">
+                    <i class="fa-solid fa-check me-1"></i>Xác nhận lưu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function moModalXacNhanThem(tenLoai) {
+    var form = document.getElementById('formThemThuocTinh');
+    if (form && !form.checkValidity()) { form.reportValidity(); return; }
+    document.getElementById('txtXacNhanThem').textContent =
+        'Bạn có chắc chắn muốn thêm ' + tenLoai + ' mới này vào hệ thống không?';
+    new bootstrap.Modal(document.getElementById('modalXacNhanThemThuocTinh')).show();
+}
+function xacNhanThucSuThem() {
+    bootstrap.Modal.getInstance(document.getElementById('modalXacNhanThemThuocTinh')).hide();
+    document.getElementById('formThemThuocTinh').submit();
+}
 </script>
 </body>
 </html>

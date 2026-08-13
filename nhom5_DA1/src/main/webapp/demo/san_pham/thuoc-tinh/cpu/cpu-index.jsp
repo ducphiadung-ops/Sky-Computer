@@ -91,7 +91,7 @@
             <div class="col-md-4">
                 <div class="card card-custom p-4">
                     <h6 class="fw-bold mb-3 text-uppercase text-muted" style="font-size:13px;"><i class="fa-solid fa-plus me-2"></i>Thêm CPU mới</h6>
-                    <form action="${pageContext.request.contextPath}/thuoc-tinh/cpu/them" method="POST">
+                    <form id="formThemThuocTinh" action="${pageContext.request.contextPath}/thuoc-tinh/cpu/them" method="POST">
                         <div class="mb-3">
                             <label class="form-label small fw-medium text-muted">Tên CPU <span class="text-danger">*</span></label>
                             <input type="text" name="tenCpu" class="form-control py-2" required>
@@ -100,7 +100,7 @@
                             <label class="form-label small fw-medium text-muted">Thế hệ CPU</label>
                             <input type="text" name="theHeCpu" class="form-control py-2">
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 py-2 fw-medium" style="border-radius:8px;">Lưu thuộc tính</button>
+                        <button type="button" class="btn btn-primary w-100 py-2 fw-medium" style="border-radius:8px;" onclick="moModalXacNhanThem('Bộ vi xử lý (CPU)')">Lưu thuộc tính</button>
                     </form>
                 </div>
             </div>
@@ -216,6 +216,50 @@ function moModalSua(id, ten, theHe) {
     document.body.appendChild(toast);
     setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3000);
 })();
+</script>
+
+<!-- ===== MODAL XÁC NHẬN THÊM THUỘC TÍNH ===== -->
+<div class="modal fade" id="modalXacNhanThemThuocTinh" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden;">
+            <div class="p-4 d-flex align-items-start gap-3">
+                <div style="width:44px;height:44px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fa-solid fa-circle-question" style="font-size:20px;color:#1a56db;"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-1" style="font-size:16px;color:#1f2937;">Xác nhận lưu thuộc tính</h5>
+                    <p id="txtXacNhanThem" class="text-secondary mb-0" style="font-size:13px;line-height:1.6;">Bạn có chắc chắn muốn thêm thuộc tính này vào hệ thống không?</p>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 px-4 pb-4">
+                <button type="button" class="btn btn-outline-secondary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="button" class="btn btn-primary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;"
+                        onclick="xacNhanThucSuThem()">
+                    <i class="fa-solid fa-check me-1"></i>Xác nhận lưu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function moModalXacNhanThem(tenLoai) {
+    // Validate form trước khi mở modal
+    var form = document.getElementById('formThemThuocTinh');
+    if (form && !form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    document.getElementById('txtXacNhanThem').textContent =
+        'Bạn có chắc chắn muốn thêm ' + tenLoai + ' mới này vào hệ thống không?';
+    new bootstrap.Modal(document.getElementById('modalXacNhanThemThuocTinh')).show();
+}
+function xacNhanThucSuThem() {
+    bootstrap.Modal.getInstance(document.getElementById('modalXacNhanThemThuocTinh')).hide();
+    document.getElementById('formThemThuocTinh').submit();
+}
 </script>
 </body>
 </html>

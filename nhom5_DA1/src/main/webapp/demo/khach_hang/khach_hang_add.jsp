@@ -388,7 +388,7 @@
 
             <div class="form-actions-footer">
                 <button type="button" class="btn btn-outline" onclick="javascript:history.back()">Hủy bỏ</button>
-                <button type="submit" class="btn btn-primary">Thêm khách hàng</button>
+                <button type="button" class="btn btn-primary" onclick="kichHoatXacNhanLuuKH()">Thêm khách hàng</button>
             </div>
         </form>
 
@@ -429,6 +429,8 @@
     //  VALIDATE KHI SUBMIT
     // ================================================================
     document.getElementById('formAddKH').addEventListener('submit', function(e) {
+        e.preventDefault(); // luôn chặn submit thật — chỉ submit qua modal
+
         let valid = true;
 
         // --- Họ tên ---
@@ -483,9 +485,11 @@
         }
 
         if (!valid) {
-            e.preventDefault();
             const firstErr = document.querySelector('.input-error');
             if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            // Validation pass → mở modal xác nhận
+            new bootstrap.Modal(document.getElementById('modalXacNhanLuuKH')).show();
         }
     });
 
@@ -688,6 +692,44 @@
         }
     });
 </script>
+
+<!-- ===== MODAL XÁC NHẬN THÊM KHÁCH HÀNG ===== -->
+<div class="modal fade" id="modalXacNhanLuuKH" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden;">
+            <div class="p-4 d-flex align-items-start gap-3">
+                <div style="width:44px;height:44px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fa-solid fa-user-plus" style="font-size:20px;color:#1a56db;"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-1" style="font-size:16px;color:#1f2937;">Xác nhận thêm khách hàng</h5>
+                    <p class="text-secondary mb-0" style="font-size:13px;line-height:1.6;">
+                        Bạn có chắc chắn muốn lưu thông tin khách hàng mới này vào hệ thống không?
+                    </p>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 px-4 pb-4">
+                <button type="button" class="btn btn-outline-secondary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="button" class="btn btn-primary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;" onclick="xacNhanThucSuLuuKH()">
+                    <i class="fa-solid fa-check me-1"></i>Xác nhận lưu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function kichHoatXacNhanLuuKH() {
+    document.getElementById('formAddKH').requestSubmit();
+}
+function xacNhanThucSuLuuKH() {
+    bootstrap.Modal.getInstance(document.getElementById('modalXacNhanLuuKH')).hide();
+    document.getElementById('formAddKH').submit();
+}
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

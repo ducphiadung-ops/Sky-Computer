@@ -375,7 +375,7 @@
                 <!-- CỤM NÚT LƯU FORM -->
                 <div class="form-actions">
                     <a href="${pageContext.request.contextPath}/nhan-vien/hien-thi" class="btn btn-outline">Hủy bỏ</a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" onclick="kichHoatXacNhanLuuNV()">
                         <i class="fa-solid fa-floppy-disk"></i> Lưu nhân viên
                     </button>
                 </div>
@@ -420,6 +420,8 @@
     //  VALIDATE KHI SUBMIT
     // ================================================================
     document.getElementById('formAddNV').addEventListener('submit', function(e) {
+        e.preventDefault(); // luôn chặn submit thật — chỉ submit qua modal
+
         let valid = true;
 
         // --- Họ tên ---
@@ -514,10 +516,12 @@
         }
 
         if (!valid) {
-            e.preventDefault();
             // Cuộn lên lỗi đầu tiên
             const firstErr = document.querySelector('.input-error');
             if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            // Validation pass → mở modal xác nhận
+            new bootstrap.Modal(document.getElementById('modalXacNhanLuuNV')).show();
         }
     });
 
@@ -639,5 +643,41 @@
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ===== MODAL XÁC NHẬN LƯU NHÂN VIÊN ===== -->
+<div class="modal fade" id="modalXacNhanLuuNV" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden;">
+            <div class="p-4 d-flex align-items-start gap-3">
+                <div style="width:44px;height:44px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fa-solid fa-user-tie" style="font-size:20px;color:#1a56db;"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-1" style="font-size:16px;color:#1f2937;">Xác nhận lưu nhân viên</h5>
+                    <p class="text-secondary mb-0" style="font-size:13px;line-height:1.6;">
+                        Bạn có chắc chắn muốn lưu thông tin nhân viên mới này vào hệ thống không?
+                    </p>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 px-4 pb-4">
+                <button type="button" class="btn btn-outline-secondary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="button" class="btn btn-primary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;" onclick="xacNhanThucSuLuuNV()">
+                    <i class="fa-solid fa-check me-1"></i>Xác nhận lưu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function kichHoatXacNhanLuuNV() {
+    document.getElementById('formAddNV').requestSubmit();
+}
+function xacNhanThucSuLuuNV() {
+    bootstrap.Modal.getInstance(document.getElementById('modalXacNhanLuuNV')).hide();
+    document.getElementById('formAddNV').submit();
+}
+</script>
 </body>
 </html>

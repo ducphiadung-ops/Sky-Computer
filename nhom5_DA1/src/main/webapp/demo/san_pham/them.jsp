@@ -178,6 +178,40 @@
         .btn-nhap-imei-chuan { background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; font-weight: 600; font-size: 13px; padding: 6px 14px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
         .btn-nhap-imei-chuan:hover { background-color: #a7f3d0; }
 
+        /* Nút + ghép cạnh Select2 multiple */
+        .btn-plus-attr {
+            height: 42px;
+            width: 42px;
+            padding: 0;
+            border-radius: 0 8px 8px 0;
+            border-left: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        /* Select2 container trong wrapper d-flex: chiếm hết chiều rộng còn lại */
+        #wrapperMauSac .select2-container,
+        #wrapperRam    .select2-container,
+        #wrapperOCung  .select2-container {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        /* Bo góc trái cho Select2 span, bỏ góc phải để nối với nút + */
+        #wrapperMauSac .select2-selection,
+        #wrapperRam    .select2-selection,
+        #wrapperOCung  .select2-selection {
+            border-radius: 8px 0 0 8px !important;
+            border-right: none !important;
+            min-height: 42px;
+        }
+        #wrapperMauSac .select2-selection:focus,
+        #wrapperRam    .select2-selection:focus,
+        #wrapperOCung  .select2-selection:focus {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 3px var(--primary-light) !important;
+        }
+
         /* POPUP XÁC NHẬN VÀ TOAST */
         .modal-confirm-custom .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); overflow: hidden; }
         .modal-confirm-custom .info-icon-wrapper { width: 48px; height: 48px; background-color: var(--primary-light); color: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
@@ -225,60 +259,117 @@
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Danh mục nhóm *</label>
-                        <select name="idDanhMuc" class="form-select" required>
-                            <c:forEach items="${listDanhMuc}" var="dm"><option value="${dm.id}">${dm.tenDanhMuc}</option></c:forEach>
-                        </select>
+                        <div class="input-group">
+                            <select id="selectDanhMuc" name="idDanhMuc" class="form-select" required>
+                                <c:forEach items="${listDanhMuc}" var="dm"><option value="${dm.id}">${dm.tenDanhMuc}</option></c:forEach>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary" title="Thêm danh mục mới"
+                                    onclick="moModalThemNhanh('danhMuc')"
+                                    style="border-radius:0 8px 8px 0;padding:0 14px;">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Thương hiệu sản xuất *</label>
-                        <select name="idThuongHieu" class="form-select" required>
-                            <c:forEach items="${listThuongHieu}" var="th"><option value="${th.id}">${th.tenThuongHieu}</option></c:forEach>
-                        </select>
+                        <div class="input-group">
+                            <select id="selectThuongHieu" name="idThuongHieu" class="form-select" required>
+                                <c:forEach items="${listThuongHieu}" var="th"><option value="${th.id}">${th.tenThuongHieu}</option></c:forEach>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary" title="Thêm thương hiệu mới"
+                                    onclick="moModalThemNhanh('thuongHieu')"
+                                    style="border-radius:0 8px 8px 0;padding:0 14px;">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Nhà cung cấp lô hàng *</label>
-                        <select name="idNhaCungCapForm" class="form-select" required>
-                            <c:forEach items="${listNhaCungCap}" var="ncc"><option value="${ncc.id}">${ncc.tenNhaCungCap}</option></c:forEach>
-                        </select>
+                        <div class="input-group">
+                            <select id="selectNhaCungCap" name="idNhaCungCapForm" class="form-select" required>
+                                <c:forEach items="${listNhaCungCap}" var="ncc"><option value="${ncc.id}">${ncc.tenNhaCungCap}</option></c:forEach>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary" title="Thêm nhà cung cấp mới"
+                                    onclick="moModalThemNhanh('nhaCungCap')"
+                                    style="border-radius:0 8px 8px 0;padding:0 14px;">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
                         <label class="form-label">Hệ điều hành tích hợp *</label>
-                        <select name="heDieuHanh" class="form-select" required>
-                            <option value="Windows 11 Home">Windows 11 Home</option>
-                            <option value="Windows 11 Pro">Windows 11 Pro</option>
-                            <option value="macOS">macOS</option>
-                            <option value="FreeDOS">FreeDOS</option>
-                        </select>
+                        <div class="input-group">
+                            <select id="selectHeDieuHanh" name="heDieuHanh" class="form-select" required>
+                                <option value="Windows 11 Home">Windows 11 Home</option>
+                                <option value="Windows 11 Pro">Windows 11 Pro</option>
+                                <option value="macOS">macOS</option>
+                                <option value="FreeDOS">FreeDOS</option>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary"
+                                    title="Thêm hệ điều hành mới"
+                                    onclick="moModalThemOS()"
+                                    style="border-radius: 0 8px 8px 0; padding: 0 14px;">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Kích thước màn hình *</label>
-                        <select name="idManHinh" class="form-select" required>
-                            <c:forEach items="${listManHinh}" var="mh"><option value="${mh.id}">${mh.tenManHinh} (${mh.kichThuoc})</option></c:forEach>
-                        </select>
+                        <div class="input-group">
+                            <select id="selectManHinh" name="idManHinh" class="form-select" required>
+                                <c:forEach items="${listManHinh}" var="mh"><option value="${mh.id}">${mh.tenManHinh} (${mh.kichThuoc})</option></c:forEach>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary" title="Thêm màn hình mới"
+                                    onclick="moModalThemNhanh('manHinh')"
+                                    style="border-radius:0 8px 8px 0;padding:0 14px;">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Thông số Pin máy *</label>
-                        <select name="idPin" class="form-select" required>
-                            <c:forEach items="${listPin}" var="p"><option value="${p.id}">${p.tenPin}</option></c:forEach>
-                        </select>
+                        <div class="input-group">
+                            <select id="selectPin" name="idPin" class="form-select" required>
+                                <c:forEach items="${listPin}" var="p"><option value="${p.id}">${p.tenPin}</option></c:forEach>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary" title="Thêm pin mới"
+                                    onclick="moModalThemNhanh('pin')"
+                                    style="border-radius:0 8px 8px 0;padding:0 14px;">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label">Bộ vi xử lý (CPU) *</label>
-                        <select name="idCpu" class="form-select" required>
-                            <c:forEach items="${listCpu}" var="cpu"><option value="${cpu.id}">${cpu.tenCpu}</option></c:forEach>
-                        </select>
+                        <div class="input-group">
+                            <select id="selectCpu" name="idCpu" class="form-select" required>
+                                <c:forEach items="${listCpu}" var="cpu"><option value="${cpu.id}">${cpu.tenCpu}</option></c:forEach>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary" title="Thêm CPU mới"
+                                    onclick="moModalThemNhanh('cpu')"
+                                    style="border-radius:0 8px 8px 0;padding:0 14px;">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Card đồ họa (GPU) *</label>
-                        <select name="idGpu" class="form-select" required>
-                            <c:forEach items="${listGpu}" var="gpu"><option value="${gpu.id}">${gpu.tenGpu}</option></c:forEach>
-                        </select>
+                        <div class="input-group">
+                            <select id="selectGpu" name="idGpu" class="form-select" required>
+                                <c:forEach items="${listGpu}" var="gpu"><option value="${gpu.id}">${gpu.tenGpu}</option></c:forEach>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary" title="Thêm GPU mới"
+                                    onclick="moModalThemNhanh('gpu')"
+                                    style="border-radius:0 8px 8px 0;padding:0 14px;">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -287,21 +378,39 @@
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
                         <label class="form-label">Chọn các Màu sắc *</label>
-                        <select id="selectMàu" class="form-select select2-tag-build" multiple="multiple" style="width: 100%">
-                            <c:forEach items="${listMauSac}" var="ms"><option value="${ms.id}">${ms.tenMauSac}</option></c:forEach>
-                        </select>
+                        <div class="d-flex" id="wrapperMauSac">
+                            <select id="selectMàu" class="form-select select2-tag-build select2-with-btn" multiple="multiple" style="width:100%;">
+                                <c:forEach items="${listMauSac}" var="ms"><option value="${ms.id}">${ms.tenMauSac}</option></c:forEach>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary btn-plus-attr flex-shrink-0"
+                                    title="Thêm màu sắc mới" onclick="moModalThemNhanh('mauSac')">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Chọn dung lượng RAM *</label>
-                        <select id="selectRam" class="form-select select2-tag-build" multiple="multiple" style="width: 100%">
-                            <c:forEach items="${listRam}" var="ram"><option value="${ram.id}">${ram.dungLuongRam}</option></c:forEach>
-                        </select>
+                        <div class="d-flex" id="wrapperRam">
+                            <select id="selectRam" class="form-select select2-tag-build select2-with-btn" multiple="multiple" style="width:100%;">
+                                <c:forEach items="${listRam}" var="ram"><option value="${ram.id}">${ram.dungLuongRam}</option></c:forEach>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary btn-plus-attr flex-shrink-0"
+                                    title="Thêm RAM mới" onclick="moModalThemNhanh('ram')">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Chọn dung lượng Ổ cứng SSD *</label>
-                        <select id="selectOCung" class="form-select select2-tag-build" multiple="multiple" style="width: 100%">
-                            <c:forEach items="${listOCung}" var="oc"><option value="${oc.id}">${oc.dungLuongOCung}</option></c:forEach>
-                        </select>
+                        <div class="d-flex" id="wrapperOCung">
+                            <select id="selectOCung" class="form-select select2-tag-build select2-with-btn" multiple="multiple" style="width:100%;">
+                                <c:forEach items="${listOCung}" var="oc"><option value="${oc.id}">${oc.dungLuongOCung}</option></c:forEach>
+                            </select>
+                            <button type="button" class="btn btn-outline-primary btn-plus-attr flex-shrink-0"
+                                    title="Thêm ổ cứng mới" onclick="moModalThemNhanh('oCung')">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-dark-custom w-100" onclick="generateTổHợpBiếnThể()">
@@ -388,9 +497,17 @@
     let globalIndex = 0;
 
     $(document).ready(function() {
-        $('.select2-tag-build').select2({
+        // Select2 thông thường (không ghép nút +)
+        $('.select2-tag-build:not(.select2-with-btn)').select2({
             placeholder: "Bấm chọn thuộc tính...",
             allowClear: true
+        });
+
+        // Select2 ghép với nút + — cần width 100% để container chiếm đủ chỗ
+        $('.select2-with-btn').select2({
+            placeholder: "Bấm chọn thuộc tính...",
+            allowClear: true,
+            width: '100%'
         });
 
         $('#txtAreaImeiTemp').on('input', function() {
@@ -972,6 +1089,430 @@
             hienThongBaoToast("Không thể kiểm tra tên sản phẩm. Vui lòng thử lại!", "error");
         });
     }
+</script>
+
+<!-- ========== MODAL THÊM NHANH THUỘC TÍNH (GENERIC) ========== -->
+<div class="modal fade" id="modalThemNhanhThuocTinh" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden;">
+
+            <!-- Header -->
+            <div class="modal-header border-0 px-4 pt-4 pb-2">
+                <div class="d-flex align-items-center gap-3">
+                    <div id="qaIconBox"
+                         style="width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#eff6ff;">
+                        <i id="qaIcon" class="fa-solid fa-plus" style="font-size:18px;color:#1a56db;"></i>
+                    </div>
+                    <div>
+                        <h5 id="qaTieuDe" class="fw-bold mb-0" style="font-size:16px;color:#1f2937;">Thêm thuộc tính mới</h5>
+                        <small class="text-muted" style="font-size:12px;">Thuộc tính sẽ được lưu vào hệ thống và tự động chọn</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" style="font-size:12px;"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body px-4 py-3">
+
+                <div class="mb-3" id="qaFieldTenChinh">
+                    <label id="qaLabelTenChinh" class="fw-semibold text-secondary mb-1 d-block" style="font-size:13px;">
+                        Tên <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" id="qaInputTenChinh" class="form-control" maxlength="150"
+                           style="font-size:14px;border-radius:8px;" placeholder=""
+                           onkeydown="if(event.key==='Enter'){event.preventDefault();xacNhanThemNhanh();}">
+                </div>
+
+                <div class="mb-3 d-none" id="qaFieldPhu1">
+                    <label id="qaLabelPhu1" class="fw-semibold text-secondary mb-1 d-block" style="font-size:13px;">Thông số phụ</label>
+                    <input type="text" id="qaInputPhu1" class="form-control" maxlength="100"
+                           style="font-size:14px;border-radius:8px;" placeholder=""
+                           onkeydown="if(event.key==='Enter'){event.preventDefault();xacNhanThemNhanh();}">
+                </div>
+
+                <div class="mb-3 d-none" id="qaFieldPhu2">
+                    <label id="qaLabelPhu2" class="fw-semibold text-secondary mb-1 d-block" style="font-size:13px;">Độ phân giải</label>
+                    <input type="text" id="qaInputPhu2" class="form-control" maxlength="100"
+                           style="font-size:14px;border-radius:8px;" placeholder="VD: 1920x1080, 2560x1600"
+                           onkeydown="if(event.key==='Enter'){event.preventDefault();xacNhanThemNhanh();}">
+                </div>
+
+                <div class="mb-3 d-none" id="qaFieldPhu3">
+                    <label id="qaLabelPhu3" class="fw-semibold text-secondary mb-1 d-block" style="font-size:13px;">Tần số quét</label>
+                    <input type="text" id="qaInputPhu3" class="form-control" maxlength="50"
+                           style="font-size:14px;border-radius:8px;" placeholder="VD: 60Hz, 120Hz, 144Hz"
+                           onkeydown="if(event.key==='Enter'){event.preventDefault();xacNhanThemNhanh();}">
+                </div>
+
+                <div id="qaErrorBox" class="d-none p-2 rounded"
+                     style="background:#fff1f2;border:1px solid #fca5a5;font-size:12px;color:#dc2626;line-height:1.6;"></div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-2 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="button" id="btnQaXacNhan" class="btn btn-primary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;" onclick="xacNhanThemNhanh()">
+                    <i class="fa-solid fa-plus me-1"></i>Lưu &amp; chọn
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ================================================================
+   QUICK-ADD ATTRIBUTE — 1 modal dùng chung cho 7 loại thuộc tính
+   Flow: moModalThemNhanh(loai) → nhập → xacNhanThemNhanh()
+         → AJAX POST /san-pham/them-nhanh-thuoc-tinh
+         → {success,id,label} → thêm <option> vào select → chọn
+================================================================ */
+var QA_CONFIG = {
+    mauSac:  { tieuDe:'Thêm màu sắc mới',    icon:'fa-palette',      tenChinh:'Tên màu sắc *',  phChinh:'VD: Xanh Dương, Titan, Bạc',          phu1:null,            phu2:null, phu3:null, selectId:'selectMàu',  isMultiple:true,
+                params:function(){ return {loai:'mauSac', tenMauSac:qa('qaInputTenChinh')}; } },
+    ram:     { tieuDe:'Thêm RAM mới',         icon:'fa-memory',       tenChinh:'Tên RAM *',      phChinh:'VD: DDR5, DDR4',                        phu1:'Dung lượng *',  phPhu1:'VD: 8GB, 16GB, 32GB',   phu2:null, phu3:null, selectId:'selectRam',   isMultiple:true,
+                params:function(){ return {loai:'ram', tenRam:qa('qaInputTenChinh'), dungLuongRam:qa('qaInputPhu1')}; } },
+    oCung:   { tieuDe:'Thêm ổ cứng mới',      icon:'fa-hard-drive',   tenChinh:'Tên ổ cứng *',  phChinh:'VD: SSD NVMe, SSD SATA',               phu1:'Dung lượng *',  phPhu1:'VD: 256GB, 512GB, 1TB', phu2:null, phu3:null, selectId:'selectOCung', isMultiple:true,
+                params:function(){ return {loai:'oCung', tenOCung:qa('qaInputTenChinh'), dungLuongOCung:qa('qaInputPhu1')}; } },
+    manHinh: { tieuDe:'Thêm màn hình mới',    icon:'fa-desktop',      tenChinh:'Tên màn hình *', phChinh:'VD: IPS Anti-glare, OLED',              phu1:'Kích thước (inch)', phPhu1:'VD: 14", 15.6", 16"', phu2:'Độ phân giải', phu3:'Tần số quét', selectId:'selectManHinh', isMultiple:false,
+                params:function(){ return {loai:'manHinh', tenManHinh:qa('qaInputTenChinh'), kichThuoc:qa('qaInputPhu1'), doPhanGiai:qa('qaInputPhu2'), tanSoQuet:qa('qaInputPhu3')}; } },
+    pin:     { tieuDe:'Thêm pin mới',         icon:'fa-battery-full', tenChinh:'Tên pin *',      phChinh:'VD: Li-Ion, Li-Polymer',               phu1:'Dung lượng pin', phPhu1:'VD: 56Wh, 72Wh, 99.9Wh', phu2:null, phu3:null, selectId:'selectPin',   isMultiple:false,
+                params:function(){ return {loai:'pin', tenPin:qa('qaInputTenChinh'), dungLuongPin:qa('qaInputPhu1')}; } },
+    cpu:     { tieuDe:'Thêm CPU mới',         icon:'fa-microchip',    tenChinh:'Tên CPU *',      phChinh:'VD: Intel Core i5-13500H',              phu1:'Thế hệ / dòng chip', phPhu1:'VD: Gen 13, Raptor Lake', phu2:null, phu3:null, selectId:'selectCpu', isMultiple:false,
+                params:function(){ return {loai:'cpu', tenCpu:qa('qaInputTenChinh'), theHeCpu:qa('qaInputPhu1')}; } },
+    gpu:     { tieuDe:'Thêm GPU mới',         icon:'fa-tv',           tenChinh:'Tên GPU *',      phChinh:'VD: NVIDIA RTX 4060, Intel Iris Xe',   phu1:'Dung lượng VRAM', phPhu1:'VD: 4GB, 6GB, 8GB', phu2:null, phu3:null, selectId:'selectGpu',  isMultiple:false,
+                params:function(){ return {loai:'gpu', tenGpu:qa('qaInputTenChinh'), dungLuongGpu:qa('qaInputPhu1')}; } },
+    danhMuc:   { tieuDe:'Thêm danh mục mới',      icon:'fa-layer-group',  tenChinh:'Tên danh mục *',     phChinh:'VD: PC Lắp Ráp, Laptop Gaming',        phu1:null, phu2:null, phu3:null, selectId:'selectDanhMuc',    isMultiple:false,
+                params:function(){ return {loai:'danhMuc', tenDanhMuc:qa('qaInputTenChinh')}; } },
+    thuongHieu:{ tieuDe:'Thêm thương hiệu mới',   icon:'fa-tag',          tenChinh:'Tên thương hiệu *',  phChinh:'VD: Dell, Asus, Acer, Apple',          phu1:null, phu2:null, phu3:null, selectId:'selectThuongHieu', isMultiple:false,
+                params:function(){ return {loai:'thuongHieu', tenThuongHieu:qa('qaInputTenChinh')}; } },
+    nhaCungCap:{ tieuDe:'Thêm nhà cung cấp mới',  icon:'fa-truck',        tenChinh:'Tên nhà cung cấp *', phChinh:'VD: Synnex FPT, Ingram Micro',          phu1:'Số điện thoại',  phPhu1:'VD: 0901234567', phu2:'Địa chỉ', phPhu2:'VD: 123 Nguyễn Văn A, Q.1, TP.HCM', phu3:null, selectId:'selectNhaCungCap', isMultiple:false,
+                params:function(){ return {loai:'nhaCungCap', tenNhaCungCap:qa('qaInputTenChinh'), sdt:qa('qaInputPhu1'), diaChi:qa('qaInputPhu2')}; } }
+};
+
+var _qaLoai = null;
+
+function qa(id){ var el=document.getElementById(id); return el?el.value.trim():''; }
+
+function moModalThemNhanh(loai) {
+    var cfg = QA_CONFIG[loai]; if(!cfg) return;
+    _qaLoai = loai;
+
+    // Reset fields
+    ['qaInputTenChinh','qaInputPhu1','qaInputPhu2','qaInputPhu3'].forEach(function(id){ document.getElementById(id).value=''; });
+    document.getElementById('qaErrorBox').classList.add('d-none');
+    document.getElementById('qaErrorBox').innerHTML='';
+
+    // Áp config
+    document.getElementById('qaTieuDe').textContent = cfg.tieuDe;
+    document.getElementById('qaIcon').className     = 'fa-solid ' + cfg.icon;
+    document.getElementById('qaIcon').style.cssText = 'font-size:18px;color:#1a56db;';
+
+    // Tên chính
+    document.getElementById('qaLabelTenChinh').innerHTML = cfg.tenChinh + '';
+    document.getElementById('qaInputTenChinh').placeholder = cfg.phChinh || '';
+
+    // Phụ 1
+    if(cfg.phu1){
+        document.getElementById('qaLabelPhu1').textContent = cfg.phu1;
+        document.getElementById('qaInputPhu1').placeholder = cfg.phPhu1 || '';
+        document.getElementById('qaFieldPhu1').classList.remove('d-none');
+    } else { document.getElementById('qaFieldPhu1').classList.add('d-none'); }
+
+    // Phụ 2
+    if(cfg.phu2){ document.getElementById('qaLabelPhu2').textContent=cfg.phu2; document.getElementById('qaInputPhu2').placeholder = cfg.phPhu2 || ''; document.getElementById('qaFieldPhu2').classList.remove('d-none'); }
+    else { document.getElementById('qaFieldPhu2').classList.add('d-none'); }
+
+    // Phụ 3
+    if(cfg.phu3){ document.getElementById('qaFieldPhu3').classList.remove('d-none'); }
+    else { document.getElementById('qaFieldPhu3').classList.add('d-none'); }
+
+    new bootstrap.Modal(document.getElementById('modalThemNhanhThuocTinh')).show();
+    setTimeout(function(){ document.getElementById('qaInputTenChinh').focus(); }, 300);
+}
+
+function xacNhanThemNhanh() {
+    var cfg = QA_CONFIG[_qaLoai]; if(!cfg) return;
+    var errorBox = document.getElementById('qaErrorBox');
+    var btn      = document.getElementById('btnQaXacNhan');
+    errorBox.classList.add('d-none'); errorBox.innerHTML='';
+
+    // Validate tên chính
+    if(!qa('qaInputTenChinh')){
+        errorBox.innerHTML='<i class="fa-solid fa-circle-exclamation me-1"></i>Vui lòng nhập tên trước khi lưu.';
+        errorBox.classList.remove('d-none');
+        document.getElementById('qaInputTenChinh').focus();
+        return;
+    }
+    // Validate phụ 1 bắt buộc (RAM, ổ cứng)
+    if(cfg.phu1 && cfg.phu1.includes('*') && !qa('qaInputPhu1')){
+        errorBox.innerHTML='<i class="fa-solid fa-circle-exclamation me-1"></i>' + cfg.phu1.replace(' *','') + ' không được để trống.';
+        errorBox.classList.remove('d-none');
+        document.getElementById('qaInputPhu1').focus();
+        return;
+    }
+
+    var orgText = btn.innerHTML;
+    btn.innerHTML='<span class="spinner-border spinner-border-sm me-1"></span>Đang lưu...';
+    btn.disabled=true;
+
+    var params = new URLSearchParams(cfg.params());
+
+    fetch('${pageContext.request.contextPath}/san-pham/them-nhanh-thuoc-tinh', {
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body: params.toString()
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+        btn.innerHTML=orgText; btn.disabled=false;
+        if(data.success){
+            bootstrap.Modal.getInstance(document.getElementById('modalThemNhanhThuocTinh')).hide();
+            var select = document.getElementById(cfg.selectId);
+            if(select){
+                if(cfg.isMultiple){
+                    // Select2 multiple
+                    if(window.jQuery && $(select).data('select2')){
+                        var opt = new Option(data.label, data.id, true, true);
+                        $(select).append(opt).trigger('change');
+                    } else {
+                        var opt = new Option(data.label, data.id, false, true);
+                        select.add(opt);
+                    }
+                } else {
+                    var opt = new Option(data.label, data.id, false, false);
+                    select.add(opt);
+                    select.value = data.id;
+                }
+            }
+            hienThongBaoToast('Đã thêm "' + data.label + '" và tự động chọn!', 'success');
+        } else {
+            errorBox.innerHTML='<i class="fa-solid fa-circle-exclamation me-1"></i>'+(data.message||'Có lỗi xảy ra.');
+            errorBox.classList.remove('d-none');
+        }
+    })
+    .catch(function(err){
+        btn.innerHTML=orgText; btn.disabled=false;
+        errorBox.innerHTML='<i class="fa-solid fa-circle-exclamation me-1"></i>Lỗi kết nối, vui lòng thử lại.';
+        errorBox.classList.remove('d-none');
+        console.error(err);
+    });
+}
+</script>
+
+<!-- ========== MODAL THÊM HỆ ĐIỀU HÀNH MỚI ========== -->
+<div class="modal fade" id="modalThemHeDieuHanh" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+
+            <!-- Header -->
+            <div class="modal-header border-0 px-4 pt-4 pb-2">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width:42px;height:42px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fa-brands fa-windows" style="font-size:18px;color:#1a56db;"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0" style="font-size:16px;color:#1f2937;">Thêm hệ điều hành mới</h5>
+                        <small class="text-muted" style="font-size:12px;">Tên OS sẽ được thêm vào danh sách và tự động chọn</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" style="font-size:12px;"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body px-4 py-3">
+                <label class="fw-semibold text-secondary mb-2 d-block" style="font-size:13px;">
+                    Tên hệ điều hành <span class="text-danger">*</span>
+                </label>
+                <input type="text" id="inputOSTenMoi"
+                       class="form-control"
+                       placeholder="VD: Windows 10 Pro, Ubuntu 24.04, ChromeOS..."
+                       maxlength="100"
+                       style="font-size:14px; border-radius:8px;"
+                       oninput="validateOSInput()"
+                       onkeydown="if(event.key==='Enter'){event.preventDefault();xacNhanThemOS();}">
+
+                <!-- Thanh gợi ý OS phổ biến -->
+                <div class="mt-3">
+                    <p class="text-muted mb-2" style="font-size:12px;">Gợi ý phổ biến:</p>
+                    <div class="d-flex flex-wrap gap-2" id="osQuickSuggest">
+                        <span class="badge border text-dark bg-light px-3 py-2 os-suggest-tag" style="cursor:pointer;font-size:12px;border-radius:8px !important;" onclick="chonGợiYOS(this)">Windows 10 Home</span>
+                        <span class="badge border text-dark bg-light px-3 py-2 os-suggest-tag" style="cursor:pointer;font-size:12px;border-radius:8px !important;" onclick="chonGợiYOS(this)">Windows 10 Pro</span>
+                        <span class="badge border text-dark bg-light px-3 py-2 os-suggest-tag" style="cursor:pointer;font-size:12px;border-radius:8px !important;" onclick="chonGợiYOS(this)">Ubuntu 22.04</span>
+                        <span class="badge border text-dark bg-light px-3 py-2 os-suggest-tag" style="cursor:pointer;font-size:12px;border-radius:8px !important;" onclick="chonGợiYOS(this)">Ubuntu 24.04</span>
+                        <span class="badge border text-dark bg-light px-3 py-2 os-suggest-tag" style="cursor:pointer;font-size:12px;border-radius:8px !important;" onclick="chonGợiYOS(this)">ChromeOS</span>
+                        <span class="badge border text-dark bg-light px-3 py-2 os-suggest-tag" style="cursor:pointer;font-size:12px;border-radius:8px !important;" onclick="chonGợiYOS(this)">Android</span>
+                    </div>
+                </div>
+
+                <!-- Thông báo lỗi -->
+                <div id="osErrorBox" class="d-none mt-3 p-2 rounded"
+                     style="background:#fff1f2;border:1px solid #fca5a5;font-size:12px;color:#dc2626;">
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-2 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;" data-bs-dismiss="modal">
+                    Hủy bỏ
+                </button>
+                <button type="button" id="btnXacNhanThemOS"
+                        class="btn btn-primary fw-semibold px-4"
+                        style="font-size:13px;border-radius:8px;"
+                        onclick="xacNhanThemOS()">
+                    <i class="fa-solid fa-plus me-1"></i>Thêm vào danh sách
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* ======================================================
+       THÊM NHANH HỆ ĐIỀU HÀNH — không cần backend, không cần DB
+       Logic: thêm <option> mới vào #selectHeDieuHanh và tự chọn
+    ====================================================== */
+
+    function moModalThemOS() {
+        document.getElementById('inputOSTenMoi').value = '';
+        document.getElementById('osErrorBox').classList.add('d-none');
+        document.getElementById('osErrorBox').textContent = '';
+        // Reset màu gợi ý
+        document.querySelectorAll('.os-suggest-tag').forEach(function(el) {
+            el.style.background = '';
+            el.style.color = '';
+        });
+        new bootstrap.Modal(document.getElementById('modalThemHeDieuHanh')).show();
+        setTimeout(function() {
+            document.getElementById('inputOSTenMoi').focus();
+        }, 300);
+    }
+
+    function validateOSInput() {
+        var val = document.getElementById('inputOSTenMoi').value.trim();
+        var errorBox = document.getElementById('osErrorBox');
+        errorBox.classList.add('d-none');
+        errorBox.textContent = '';
+        return val;
+    }
+
+    function chonGợiYOS(el) {
+        // Highlight tag được chọn
+        document.querySelectorAll('.os-suggest-tag').forEach(function(tag) {
+            tag.style.background = '';
+            tag.style.color = '';
+            tag.style.borderColor = '';
+        });
+        el.style.background = '#eff6ff';
+        el.style.color = '#1a56db';
+        el.style.borderColor = '#1a56db';
+
+        document.getElementById('inputOSTenMoi').value = el.textContent.trim();
+        document.getElementById('osErrorBox').classList.add('d-none');
+        document.getElementById('inputOSTenMoi').focus();
+    }
+
+    function xacNhanThemOS() {
+        var input  = document.getElementById('inputOSTenMoi');
+        var val    = input.value.trim();
+        var errorBox = document.getElementById('osErrorBox');
+
+        // --- Validate ---
+        if (!val) {
+            errorBox.textContent = 'Vui lòng nhập tên hệ điều hành trước khi thêm.';
+            errorBox.classList.remove('d-none');
+            input.focus();
+            return;
+        }
+        if (val.length > 100) {
+            errorBox.textContent = 'Tên hệ điều hành không được vượt quá 100 ký tự.';
+            errorBox.classList.remove('d-none');
+            return;
+        }
+
+        var select = document.getElementById('selectHeDieuHanh');
+
+        // --- Kiểm tra trùng (không phân biệt hoa/thường) ---
+        var existed = false;
+        for (var i = 0; i < select.options.length; i++) {
+            if (select.options[i].value.trim().toLowerCase() === val.toLowerCase()) {
+                existed = true;
+                // Nếu đã tồn tại thì chỉ chọn nó và thông báo nhẹ
+                select.value = select.options[i].value;
+                break;
+            }
+        }
+
+        if (existed) {
+            errorBox.innerHTML = '<i class="fa-solid fa-circle-info me-1"></i>"' + val + '" đã có trong danh sách — đã tự động chọn cho bạn.';
+            errorBox.style.background = '#eff6ff';
+            errorBox.style.borderColor = '#93c5fd';
+            errorBox.style.color = '#1d4ed8';
+            errorBox.classList.remove('d-none');
+            // Đóng modal sau 1.2s
+            setTimeout(function() {
+                bootstrap.Modal.getInstance(document.getElementById('modalThemHeDieuHanh')).hide();
+            }, 1200);
+            return;
+        }
+
+        // --- Thêm option mới vào select ---
+        var newOption = new Option(val, val, true, true); // (text, value, defaultSelected, selected)
+        select.add(newOption);
+
+        // --- Lưu vào localStorage để gợi ý lại lần sau ---
+        try {
+            var saved = JSON.parse(localStorage.getItem('skyOS') || '[]');
+            if (!saved.includes(val)) {
+                saved.push(val);
+                localStorage.setItem('skyOS', JSON.stringify(saved));
+            }
+        } catch(e) {}
+
+        // --- Đóng modal và hiển thị toast thành công ---
+        bootstrap.Modal.getInstance(document.getElementById('modalThemHeDieuHanh')).hide();
+        hienThongBaoToast('Đã thêm hệ điều hành "' + val + '" và tự động chọn!', 'success');
+    }
+
+    /* Load OS đã từng thêm từ localStorage vào danh sách gợi ý */
+    (function loadSavedOS() {
+        try {
+            var saved = JSON.parse(localStorage.getItem('skyOS') || '[]');
+            var select = document.getElementById('selectHeDieuHanh');
+            var container = document.getElementById('osQuickSuggest');
+
+            saved.forEach(function(osName) {
+                // Thêm vào select nếu chưa có
+                var found = false;
+                for (var i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value.toLowerCase() === osName.toLowerCase()) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    select.add(new Option(osName, osName));
+                }
+                // Thêm vào thanh gợi ý nếu chưa có
+                var alreadyInSuggest = false;
+                container.querySelectorAll('.os-suggest-tag').forEach(function(tag) {
+                    if (tag.textContent.trim().toLowerCase() === osName.toLowerCase()) {
+                        alreadyInSuggest = true;
+                    }
+                });
+                if (!alreadyInSuggest) {
+                    var tag = document.createElement('span');
+                    tag.className = 'badge border text-dark bg-light px-3 py-2 os-suggest-tag';
+                    tag.style.cssText = 'cursor:pointer;font-size:12px;border-radius:8px;';
+                    tag.textContent = osName;
+                    tag.setAttribute('onclick', 'chonGợiYOS(this)');
+                    container.appendChild(tag);
+                }
+            });
+        } catch(e) {}
+    })();
 </script>
 </body>
 </html>
