@@ -459,15 +459,43 @@
             // Ẩn error box khi người dùng đang gõ lại
             $('#imeiErrorBox').addClass('d-none').html('');
 
-            $('#lblCountImeiModal').text(lines.length + " IMEI mới");
+            // Lấy index của biến thể hiện tại
+            const currentIndex = document.getElementById("currentInputIndexTarget").value;
+            
+            // Lấy IMEI đã lưu của biến thể này
+            const textDaLuu = document.getElementById("imei-hidden-" + currentIndex).value;
+            const mangDaLuu = textDaLuu ? textDaLuu.split('\n').filter(s => s.trim().length > 0) : [];
+
+            // Tính tổng số lượng (đã lưu + mới nhập)
+            const tongSoLuong = mangDaLuu.length + lines.length;
+            $('#lblCountImeiModal').text(tongSoLuong + " IMEI");
+
+            // Tạo HTML hiển thị IMEI đã lưu
+            let htmlDaLuu = '';
+            if (mangDaLuu.length > 0) {
+                htmlDaLuu = '<div class="mb-2"><div class="mb-1 fw-semibold text-secondary" style="font-size:11px;">IMEI đã lưu (' + mangDaLuu.length + '):</div>' +
+                    mangDaLuu.map(l =>
+                        '<span class="badge me-1 mb-1 border border-success-subtle" ' +
+                        'style="font-size:11px; background-color:#f0fdf4; color:#16a34a;">' + l.trim() + '</span>'
+                    ).join('') + '</div>';
+            }
+
+            // Tạo HTML hiển thị IMEI mới đang nhập
+            let htmlMoi = '';
             if (lines.length > 0) {
-                $('#boxImeiListPreview').html(lines.map(l => {
-                    const ok = imeiRegex.test(l);
-                    return `<span class="badge me-1 mb-1 ${ok
-                        ? 'bg-light text-dark border border-secondary-subtle'
-                        : 'text-danger border border-danger-subtle'}"
-                        style="font-size:11px; background-color:${ok ? '' : '#fff1f2'};">${l}${ok ? '' : ' ⚠️'}</span>`;
-                }).join(''));
+                htmlMoi = '<div><div class="mb-1 fw-semibold text-secondary" style="font-size:11px;">IMEI mới đang nhập (' + lines.length + '):</div>' +
+                    lines.map(l => {
+                        const ok = imeiRegex.test(l);
+                        return `<span class="badge me-1 mb-1 ${ok
+                            ? 'bg-light text-dark border border-secondary-subtle'
+                            : 'text-danger border border-danger-subtle'}"
+                            style="font-size:11px; background-color:${ok ? '' : '#fff1f2'};">${l}${ok ? '' : ' ⚠️'}</span>`;
+                    }).join('') + '</div>';
+            }
+
+            // Hiển thị cả IMEI đã lưu và IMEI mới
+            if (htmlDaLuu || htmlMoi) {
+                $('#boxImeiListPreview').html(htmlDaLuu + htmlMoi);
             } else {
                 $('#boxImeiListPreview').text("Chưa có text IMEI nào được nhập");
             }

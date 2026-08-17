@@ -646,7 +646,16 @@ public class HoaDonServlet extends HttpServlet {
             HoaDon hd = hoaDonRepository.getOne(idHoaDon);
             if (hd == null) { jsonErr(resp, 404, "Không tìm thấy hoá đơn"); return; }
             if (!isOwner(hd, req)) { jsonErr(resp, 403, "Bạn không có quyền thao tác hoá đơn này"); return; }
+            
+            // Nếu đã thanh toán nhưng thiếu hình thức, vẫn set lại
             if (hd.getTrangThai() != null && hd.getTrangThai() == 1) {
+                if (hd.getHinhThucThanhToan() == null) {
+                    HinhThucThanhToan hinhThuc = hinhThucThanhToanRepo.getOne(idHinhThuc);
+                    if (hinhThuc != null) {
+                        hd.setHinhThucThanhToan(hinhThuc);
+                        hoaDonRepository.update(hd);
+                    }
+                }
                 jsonOk(resp, "{\"success\":true,\"maHoaDon\":\"" + hd.getMaHoaDon() + "\"}");
                 return;
             }

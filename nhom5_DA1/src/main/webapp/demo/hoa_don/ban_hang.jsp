@@ -97,16 +97,14 @@
         .info-label{font-size:11px;color:var(--text-muted);margin-bottom:1px;}
         .info-value{font-size:13px;font-weight:500;color:var(--text-main);line-height:1.4;}
         /* MODAL */
-        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:9999;backdrop-filter:blur(2px);pointer-events:auto;transition:opacity 0.2s ease;}
-        .modal-overlay.active{display:flex !important;opacity:1;}
-        .modal-overlay.closing{opacity:0;}
-        .modal-container{background:#fff;width:90%;max-width:1100px;max-height:88vh;border-radius:12px;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:mfadeIn .25s ease;position:relative;z-index:10000;}
-        .modal-header{padding:16px 24px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;position:relative;z-index:10001;}
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:9999;backdrop-filter:blur(2px);}
+        .modal-overlay.active{display:flex !important;}
+        .modal-container{background:#fff;width:90%;max-width:1100px;max-height:88vh;border-radius:12px;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:mfadeIn .25s ease;}
+        .modal-header{padding:16px 24px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
         .modal-header h3{font-size:17px;display:flex;align-items:center;gap:8px;margin:0;}
         .btn-close-modal{background:transparent;border:none;font-size:20px;color:var(--text-muted);cursor:pointer;padding:4px 8px;border-radius:4px;}
         .btn-close-modal:hover{color:var(--danger-text);background:var(--danger-bg);}
-        .modal-body{padding:20px 24px;overflow-y:auto;flex:1;position:relative;z-index:10001;}
-        .modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:16px 20px;border-top:1px solid var(--border-color);position:relative;z-index:10001;}
+        .modal-body{padding:20px 24px;overflow-y:auto;flex:1;}
         @keyframes mfadeIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
         /* HOÁ ĐƠN CHỜ TABS */
         .don-cho-section{background:#fff;border:1px solid var(--border-color);border-radius:12px;padding:16px 20px;margin-bottom:16px;}
@@ -303,7 +301,7 @@
                             </div>
                         </div>
                         <div class="qr-info">
-                            <div class="qr-bank"><i class="fa-solid fa-building-columns"></i> MB Bank — 0387772459</div>
+                            <div class="qr-bank"><i class="fa-solid fa-building-columns"></i> MBBank — 14210508032007 (LUONG DUY DONG)</div>
                             <div class="qr-amount" id="qrAmount">0 đ</div>
                             <div class="qr-desc" id="qrDesc">Mã hoá đơn: —</div>
                         </div>
@@ -352,7 +350,7 @@
     </div>
 </main>
 
-<%-- ===== MODAL CHỌN SẢN PHẨM ===== --%>
+<%-- MODALS CHỌN SẢN PHẨM / KHÁCH HÀNG / IN HÓA ĐƠN --%>
 <div class="modal-overlay" id="productModal">
     <div class="modal-container">
         <div class="modal-header">
@@ -363,9 +361,7 @@
             <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
                 <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:220px;">
                     <label style="font-size:11px;font-weight:600;color:#475569;text-transform:uppercase;">Tìm kiếm</label>
-                    <input type="text" id="productSearchInput" class="form-control"
-                           placeholder="Tên sản phẩm, Mã SP hoặc IMEI..."
-                           style="width:100%;">
+                    <input type="text" id="productSearchInput" class="form-control" placeholder="Tên sản phẩm, Mã SP hoặc IMEI..." style="width:100%;">
                 </div>
                 <select id="filterMauSac" class="form-control" style="width:130px;align-self:flex-end;"><option value="">Màu sắc</option></select>
                 <select id="filterCpu" class="form-control" style="width:130px;align-self:flex-end;"><option value="">CPU</option></select>
@@ -384,12 +380,7 @@
                 </tr></thead>
                 <tbody id="dbProductList">
                 <c:forEach items="${listSanPham}" var="sp" varStatus="loop">
-                    <tr data-name="${sp.sanPham.tenSanPham}"
-                        data-masp="${sp.sanPham.maSanPham}"
-                        data-cauhinhid="${sp.cauHinhSanPham.id}"
-                        data-mausac="${sp.cauHinhSanPham.mauSac.tenMauSac}"
-                        data-cpu="${sp.cauHinhSanPham.cpu.tenCpu}"
-                        data-ram="${sp.cauHinhSanPham.ram.dungLuongRam}">
+                    <tr data-name="${sp.sanPham.tenSanPham}" data-masp="${sp.sanPham.maSanPham}" data-cauhinhid="${sp.cauHinhSanPham.id}" data-mausac="${sp.cauHinhSanPham.mauSac.tenMauSac}" data-cpu="${sp.cauHinhSanPham.cpu.tenCpu}" data-ram="${sp.cauHinhSanPham.ram.dungLuongRam}">
                         <td style="text-align:center;">${loop.index+1}</td>
                         <td style="color:var(--primary);font-weight:600;font-size:12px;">${sp.sanPham.maSanPham}</td>
                         <td style="font-weight:500;font-size:13px;">${sp.sanPham.tenSanPham}</td>
@@ -400,52 +391,26 @@
                                 </span>
                             </c:if>
                         </td>
-                        <td style="color:var(--danger-text);font-weight:700;font-size:13px;white-space:nowrap;">
-                            <c:out value="${sp.donGia}"/> đ
-                        </td>
+                        <td style="color:var(--danger-text);font-weight:700;font-size:13px;white-space:nowrap;"><c:out value="${sp.donGia}"/> đ</td>
+                        <td style="text-align:center;"><span style="background:var(--primary-light);padding:3px 8px;border:1px solid #bfdbfe;border-radius:4px;color:var(--primary);font-weight:600;font-size:12px;">${sp.tonKho}</span></td>
                         <td style="text-align:center;">
-                            <span style="background:var(--primary-light);padding:3px 8px;border:1px solid #bfdbfe;border-radius:4px;color:var(--primary);font-weight:600;font-size:12px;">${sp.tonKho}</span>
-                        </td>
-                        <td style="text-align:center;">
-                            <button type="button" class="btn btn-primary-light btn-open-seri"
-                                    data-cauhinh-id="${sp.cauHinhSanPham.id}"
-                                    data-masp="${sp.sanPham.maSanPham}"
-                                    data-name="${sp.sanPham.tenSanPham}"
-                                    data-color="${sp.cauHinhSanPham.mauSac.tenMauSac}"
-                                    data-price="${sp.donGia}"
-                                    data-cpu="${sp.cauHinhSanPham.cpu.tenCpu}"
-                                    data-ram="${sp.cauHinhSanPham.ram.dungLuongRam}"
-                                    data-gpu="${sp.cauHinhSanPham.gpu.tenGpu}"
-                                    data-storage="${sp.cauHinhSanPham.OCung.dungLuongOCung}"
-                                    data-os="${sp.cauHinhSanPham.heDieuHanh}"
-                                    style="padding:5px 11px;font-size:12px;">
-                                <i class="fa-solid fa-barcode"></i> Chọn seri
-                            </button>
+                            <button type="button" class="btn btn-primary-light btn-open-seri" data-cauhinh-id="${sp.cauHinhSanPham.id}" data-masp="${sp.sanPham.maSanPham}" data-name="${sp.sanPham.tenSanPham}" data-color="${sp.cauHinhSanPham.mauSac.tenMauSac}" data-price="${sp.donGia}" data-cpu="${sp.cauHinhSanPham.cpu.tenCpu}" data-ram="${sp.cauHinhSanPham.ram.dungLuongRam}" data-gpu="${sp.cauHinhSanPham.gpu.tenGpu}" data-storage="${sp.cauHinhSanPham.OCung.dungLuongOCung}" data-os="${sp.cauHinhSanPham.heDieuHanh}" style="padding:5px 11px;font-size:12px;"><i class="fa-solid fa-barcode"></i> Chọn seri</button>
                         </td>
                     </tr>
                 </c:forEach>
-                <c:if test="${empty listSanPham}">
-                    <tr><td colspan="7" class="empty-msg"><i class="fa-regular fa-folder-open"></i> Không có sản phẩm.</td></tr>
-                </c:if>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<%-- ===== MODAL CHỌN SERI ===== --%>
 <div class="modal-overlay" id="seriModal">
     <div class="modal-container" style="max-width:820px;">
         <div class="modal-header">
             <div style="flex:1;">
                 <div style="display:flex;align-items:center;gap:12px;">
-                    <button id="btnBackToProduct" style="background:var(--primary-light);border:1px solid #bfdbfe;color:var(--primary);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;">
-                        <i class="fa-solid fa-arrow-left"></i> Quay lại
-                    </button>
-                    <div>
-                        <h3 style="color:var(--primary);margin:0;"><i class="fa-solid fa-barcode"></i> Chọn mã seri</h3>
-                        <p id="seriModalSubtitle" style="font-size:12px;color:var(--text-muted);margin:3px 0 0;"></p>
-                    </div>
+                    <button id="btnBackToProduct" style="background:var(--primary-light);border:1px solid #bfdbfe;color:var(--primary);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+                    <div><h3 style="color:var(--primary);margin:0;"><i class="fa-solid fa-barcode"></i> Chọn mã seri</h3><p id="seriModalSubtitle" style="font-size:12px;color:var(--text-muted);margin:3px 0 0;"></p></div>
                 </div>
             </div>
             <button class="btn-close-modal" id="btnCloseSeriModal"><i class="fa-solid fa-xmark"></i></button>
@@ -459,206 +424,80 @@
                 <span id="seriSelectedCount" style="font-size:12px;font-weight:600;color:var(--primary);background:var(--primary-light);padding:5px 12px;border-radius:20px;border:1px solid #bfdbfe;">Đã chọn: 0</span>
             </div>
             <table class="table-cart" style="border:1px solid var(--border-color);">
-                <thead><tr>
-                    <th style="width:5%;text-align:center;"><i class="fa-solid fa-check-square" style="font-size:12px;"></i></th>
-                    <th style="width:6%;text-align:center;">STT</th>
-                    <th style="width:32%">Mã seri</th>
-                    <th style="width:28%">Mã sản phẩm</th>
-                    <th style="width:22%;text-align:center;">Trạng thái</th>
-                </tr></thead>
+                <thead><tr><th style="width:5%;text-align:center;"><i class="fa-solid fa-check-square" style="font-size:12px;"></i></th><th style="width:6%;text-align:center;">STT</th><th style="width:32%">Mã seri</th><th style="width:28%">Mã sản phẩm</th><th style="width:22%;text-align:center;">Trạng thái</th></tr></thead>
                 <tbody id="seriTableBody"></tbody>
             </table>
         </div>
         <div style="padding:14px 24px;border-top:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
             <span id="seriConfirmInfo" style="font-size:13px;font-weight:500;color:var(--text-main);"></span>
-            <button id="btnConfirmAddSeri" class="btn btn-primary" style="min-width:180px;justify-content:center;" disabled>
-                <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ hàng
-            </button>
+            <button id="btnConfirmAddSeri" class="btn btn-primary" style="min-width:180px;justify-content:center;" disabled><i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ hàng</button>
         </div>
     </div>
 </div>
 
-<%-- ===== MODAL CHỌN KHÁCH HÀNG ===== --%>
 <div class="modal-overlay" id="customerModal">
     <div class="modal-container" style="max-width:900px;">
-        <div class="modal-header">
-            <h3><i class="fa-solid fa-users" style="color:var(--primary);"></i> Chọn khách hàng</h3>
-            <button class="btn-close-modal" id="btnCloseCustomerModal"><i class="fa-solid fa-xmark"></i></button>
-        </div>
+        <div class="modal-header"><h3><i class="fa-solid fa-users" style="color:var(--primary);"></i> Chọn khách hàng</h3><button class="btn-close-modal" id="btnCloseCustomerModal"><i class="fa-solid fa-xmark"></i></button></div>
         <div class="modal-body">
-            <div style="display:flex;gap:10px;margin-bottom:16px;">
-                <input type="text" id="customerSearchInput" class="form-control" placeholder="Tìm tên, số điện thoại..." style="flex:1;">
-            </div>
+            <div style="display:flex;gap:10px;margin-bottom:16px;"><input type="text" id="customerSearchInput" class="form-control" placeholder="Tìm tên, số điện thoại..." style="flex:1;"></div>
             <table class="table-cart" style="border:1px solid var(--border-color);">
-                <thead><tr>
-                    <th style="width:5%;text-align:center;">STT</th>
-                    <th style="width:22%">Tên khách hàng</th>
-                    <th style="width:15%">Số điện thoại</th>
-                    <th style="width:22%">Email</th>
-                    <th style="width:26%">Địa chỉ</th>
-                    <th style="width:10%;text-align:center;">Chọn</th>
-                </tr></thead>
+                <thead><tr><th style="width:5%;text-align:center;">STT</th><th style="width:22%">Tên khách hàng</th><th style="width:15%">Số điện thoại</th><th style="width:22%">Email</th><th style="width:26%">Địa chỉ</th><th style="width:10%;text-align:center;">Chọn</th></tr></thead>
                 <tbody id="dbCustomerListFull">
                 <c:forEach items="${listKhachHang}" var="kh" varStatus="loopKh">
-                    <c:set var="dc" value="${not empty kh.diaChiKhachHang ? kh.diaChiKhachHang[0] : null}"/>
-                    <tr data-search="${kh.tenKhachHang} ${kh.sdt}">
-                        <td style="text-align:center;">${loopKh.index+1}</td>
-                        <td style="font-weight:500;">${kh.tenKhachHang}</td>
-                        <td>${kh.sdt}</td>
-                        <td>${kh.email}</td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${not empty dc}">${dc.diaChiCuThe}, ${dc.phuongXa}, ${dc.quanHuyen}, ${dc.tinhThanh}</c:when>
-                                <c:otherwise>Chưa có địa chỉ</c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td style="text-align:center;">
-                            <button type="button" class="btn btn-primary-light btn-select-customer"
-                                    data-id="${kh.id}"
-                                    data-name="${kh.tenKhachHang}"
-                                    data-phone="${kh.sdt}"
-                                    data-email="${kh.email}"
-                                    data-address="${not empty dc ? dc.diaChiCuThe.concat(', ').concat(dc.phuongXa).concat(', ').concat(dc.quanHuyen).concat(', ').concat(dc.tinhThanh) : 'Chưa có địa chỉ'}"
-                                    style="padding:5px 11px;font-size:12px;">
-                                <i class="fa-solid fa-check"></i> Chọn
-                            </button>
-                        </td>
-                    </tr>
+                    <c:if test="${kh.trangThai == 1}">
+                        <c:set var="dc" value="${not empty kh.diaChiKhachHang ? kh.diaChiKhachHang[0] : null}"/>
+                        <tr data-search="${kh.tenKhachHang} ${kh.sdt}">
+                            <td style="text-align:center;">${loopKh.index+1}</td><td style="font-weight:500;">${kh.tenKhachHang}</td><td>${kh.sdt}</td><td>${kh.email}</td>
+                            <td><c:choose><c:when test="${not empty dc}">${dc.diaChiCuThe}, ${dc.phuongXa}, ${dc.quanHuyen}, ${dc.tinhThanh}</c:when><c:otherwise>Chưa có địa chỉ</c:otherwise></c:choose></td>
+                            <td style="text-align:center;"><button type="button" class="btn btn-primary-light btn-select-customer" data-id="${kh.id}" data-name="${kh.tenKhachHang}" data-phone="${kh.sdt}" data-email="${kh.email}" data-address="${not empty dc ? dc.diaChiCuThe.concat(', ').concat(dc.phuongXa).concat(', ').concat(dc.quanHuyen).concat(', ').concat(dc.tinhThanh) : 'Chưa có địa chỉ'}" style="padding:5px 11px;font-size:12px;"><i class="fa-solid fa-check"></i> Chọn</button></td>
+                        </tr>
+                    </c:if>
                 </c:forEach>
-                <c:if test="${empty listKhachHang}">
-                    <tr><td colspan="6" class="empty-msg"><i class="fa-regular fa-folder-open"></i> Không có khách hàng.</td></tr>
-                </c:if>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<%-- ===== MODAL THÊM NHANH KHÁCH HÀNG ===== --%>
 <div class="modal-overlay" id="addCustomerModal">
     <div class="modal-container" style="max-width:480px;">
-        <div class="modal-header">
-            <h3><i class="fa-solid fa-user-plus" style="color:var(--primary);"></i> Thêm nhanh khách hàng</h3>
-            <button class="btn-close-modal" id="btnCloseAddCustomerModal"><i class="fa-solid fa-xmark"></i></button>
-        </div>
+        <div class="modal-header"><h3><i class="fa-solid fa-user-plus" style="color:var(--primary);"></i> Thêm nhanh khách hàng</h3><button class="btn-close-modal" id="btnCloseAddCustomerModal"><i class="fa-solid fa-xmark"></i></button></div>
         <div class="modal-body">
-            <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">
-                Chỉ cần nhập tên và số điện thoại. Các thông tin khác có thể bổ sung sau.
-            </p>
-            <div class="form-group" style="margin-bottom:14px;">
-                <label style="font-size:13px;font-weight:600;">Tên khách hàng <span style="color:var(--danger);">*</span></label>
-                <input type="text" id="addCustName" class="form-control" placeholder="Nhập tên khách hàng..." autocomplete="off">
-                <div id="errAddCustName" style="font-size:12px;color:var(--danger);margin-top:4px;display:none;"></div>
-            </div>
-            <div class="form-group" style="margin-bottom:6px;">
-                <label style="font-size:13px;font-weight:600;">Số điện thoại <span style="color:var(--danger);">*</span></label>
-                <input type="text" id="addCustPhone" class="form-control" placeholder="Nhập số điện thoại..." autocomplete="off" inputmode="numeric">
-                <div id="errAddCustPhone" style="font-size:12px;color:var(--danger);margin-top:4px;display:none;"></div>
-            </div>
+            <div class="form-group" style="margin-bottom:14px;"><label style="font-size:13px;font-weight:600;">Tên khách hàng <span style="color:var(--danger);">*</span></label><input type="text" id="addCustName" class="form-control" placeholder="Nhập tên khách hàng..." autocomplete="off"><div id="errAddCustName" style="font-size:12px;color:var(--danger);margin-top:4px;display:none;"></div></div>
+            <div class="form-group" style="margin-bottom:6px;"><label style="font-size:13px;font-weight:600;">Số điện thoại <span style="color:var(--danger);">*</span></label><input type="text" id="addCustPhone" class="form-control" placeholder="Nhập số điện thoại..." autocomplete="off" inputmode="numeric"><div id="errAddCustPhone" style="font-size:12px;color:var(--danger);margin-top:4px;display:none;"></div></div>
         </div>
-        <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:10px;padding:16px 20px;border-top:1px solid var(--border-color);">
-            <button type="button" class="btn btn-outline" id="btnCancelAddCustomer">Huỷ</button>
-            <button type="button" class="btn btn-primary" id="btnSaveAddCustomer">
-                <i class="fa-solid fa-floppy-disk"></i> Lưu khách hàng
-            </button>
-        </div>
+        <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:10px;padding:16px 20px;border-top:1px solid var(--border-color);"><button type="button" class="btn btn-outline" id="btnCancelAddCustomer">Huỷ</button><button type="button" class="btn btn-primary" id="btnSaveAddCustomer"><i class="fa-solid fa-floppy-disk"></i> Lưu khách hàng</button></div>
     </div>
 </div>
 
-<%-- ===== MODAL XÁC NHẬN THANH TOÁN ===== --%>
 <div class="modal-overlay" id="confirmModal">
-    <div class="modal-container confirm-modal-container">
-        <div class="confirm-body">
-            <div class="confirm-icon"><i class="fa-solid fa-circle-question"></i></div>
-            <h5 style="font-size:16px;font-weight:700;margin-bottom:8px;">Xác nhận thanh toán?</h5>
-            <p style="font-size:13px;color:var(--text-muted);line-height:1.6;" id="confirmModalText">Bạn có chắc muốn xác nhận thanh toán hoá đơn này không?</p>
-        </div>
-        <div class="confirm-footer">
-            <button id="btnCancelConfirm" class="btn btn-outline">Huỷ</button>
-            <button id="btnOkConfirm" class="btn btn-primary"><i class="fa-solid fa-check"></i> Xác nhận</button>
-        </div>
-    </div>
+    <div class="modal-container confirm-modal-container"><div class="confirm-body"><div class="confirm-icon"><i class="fa-solid fa-circle-question"></i></div><h5 style="font-size:16px;font-weight:700;margin-bottom:8px;">Xác nhận thanh toán?</h5><p style="font-size:13px;color:var(--text-muted);line-height:1.6;" id="confirmModalText">Bạn có chắc muốn xác nhận thanh toán hoá đơn này không?</p></div><div class="confirm-footer"><button id="btnCancelConfirm" class="btn btn-outline">Huỷ</button><button id="btnOkConfirm" class="btn btn-primary"><i class="fa-solid fa-check"></i> Xác nhận</button></div></div>
 </div>
 
-<%-- ===== MODAL XÁC NHẬN ĐÃ NHẬN TIỀN CHUYỂN KHOẢN ===== --%>
 <div class="modal-overlay" id="confirmCKModal">
-    <div class="modal-container confirm-modal-container">
-        <div class="confirm-body">
-            <div class="confirm-icon" style="background:#dbeafe;">
-                <i class="fa-solid fa-hand-holding-dollar" style="font-size:26px;color:#1a56db;"></i>
-            </div>
-            <h5 style="font-size:16px;font-weight:700;margin-bottom:8px;">Xác nhận đã nhận tiền?</h5>
-            <p style="font-size:13px;color:var(--text-muted);line-height:1.6;" id="confirmCKModalText">
-                Bạn xác nhận đã kiểm tra ứng dụng ngân hàng và tiền đã về tài khoản?
-            </p>
-            <p style="font-size:12px;color:#dc2626;margin-top:8px;">
-                ⚠️ Hành động này không thể hoàn tác sau khi xác nhận.
-            </p>
-        </div>
-        <div class="confirm-footer">
-            <button id="btnCancelCKConfirm" class="btn btn-outline">Huỷ</button>
-            <button id="btnOkCKConfirm" class="btn btn-primary">
-                <i class="fa-solid fa-check"></i> Đã nhận tiền
-            </button>
-        </div>
-    </div>
+    <div class="modal-container confirm-modal-container"><div class="confirm-body"><div class="confirm-icon" style="background:#dbeafe;"><i class="fa-solid fa-hand-holding-dollar" style="font-size:26px;color:#1a56db;"></i></div><h5 style="font-size:16px;font-weight:700;margin-bottom:8px;">Xác nhận đã nhận tiền?</h5><p style="font-size:13px;color:var(--text-muted);line-height:1.6;" id="confirmCKModalText">Bạn xác nhận đã kiểm tra ứng dụng ngân hàng và tiền đã về tài khoản?</p></div><div class="confirm-footer"><button id="btnCancelCKConfirm" class="btn btn-outline">Huỷ</button><button id="btnOkCKConfirm" class="btn btn-primary"><i class="fa-solid fa-check"></i> Đã nhận tiền</button></div></div>
 </div>
 
-<%-- ===== MODAL IN HOÁ ĐƠN SAU THANH TOÁN ===== --%>
 <div class="modal-overlay" id="printInvoiceModal">
-    <div class="modal-container confirm-modal-container">
-        <div class="confirm-body">
-            <div class="confirm-icon" style="background:#d1fae5;">
-                <i class="fa-solid fa-circle-check" style="font-size:26px;color:#047857;"></i>
-            </div>
-            <h5 style="font-size:16px;font-weight:700;margin-bottom:8px;">Thanh toán thành công!</h5>
-            <p style="font-size:13px;color:var(--text-muted);line-height:1.6;" id="printInvoiceModalText">
-                Hoá đơn đã được ghi nhận.
-            </p>
-            <p style="font-size:12px;color:var(--text-muted);margin-top:6px;">
-                Bạn có muốn xem và in hoá đơn này không?
-            </p>
-        </div>
-        <div class="confirm-footer">
-            <button id="btnSkipPrint" class="btn btn-outline">
-                <i class="fa-solid fa-xmark"></i> Bỏ qua
-            </button>
-            <button id="btnGoPrint" class="btn btn-primary">
-                <i class="fa-solid fa-print"></i> Xem &amp; In hoá đơn
-            </button>
-        </div>
-    </div>
+    <div class="modal-container confirm-modal-container"><div class="confirm-body"><div class="confirm-icon" style="background:#d1fae5;"><i class="fa-solid fa-circle-check" style="font-size:26px;color:#047857;"></i></div><h5 style="font-size:16px;font-weight:700;margin-bottom:8px;">Thanh toán thành công!</h5><p style="font-size:13px;color:var(--text-muted);line-height:1.6;" id="printInvoiceModalText">Hoá đơn đã được ghi nhận.</p></div><div class="confirm-footer"><button id="btnSkipPrint" class="btn btn-outline"><i class="fa-solid fa-xmark"></i> Bỏ qua</button><button id="btnGoPrint" class="btn btn-primary"><i class="fa-solid fa-print"></i> Xem &amp; In hoá đơn</button></div></div>
 </div>
 
-<%-- ===== MODAL CAMERA QUÉT BARCODE / QR IMEI ===== --%>
 <div class="modal-overlay" id="cameraModal">
-    <div class="modal-container" style="max-width: 500px;">
-        <div class="modal-header">
-            <h3 style="color: var(--primary); font-size:16px;"><i class="fa-solid fa-qrcode"></i> Quét Barcode / QR IMEI bằng Camera</h3>
-            <button class="btn-close-modal" onclick="dongModalQuetCamera()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="modal-body text-center py-3">
-            <div id="qrReaderBox"></div>
-            <p class="small text-muted mt-3 mb-0"><i class="fa-solid fa-lightbulb text-warning"></i> Hướng camera vào tem mã vạch để quét trực tiếp vào giỏ hàng.</p>
-        </div>
-    </div>
+    <div class="modal-container" style="max-width: 500px;"><div class="modal-header"><h3 style="color: var(--primary); font-size:16px;"><i class="fa-solid fa-qrcode"></i> Quét Barcode / QR IMEI bằng Camera</h3><button class="btn-close-modal" onclick="dongModalQuetCamera()"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body text-center py-3"><div id="qrReaderBox"></div></div></div>
 </div>
 
-<%-- JSON dữ liệu seri nhúng vào trang --%>
 <script id="seriDataScript" type="application/json">
-[<c:forEach items="${listMaSeri}" var="ms" varStatus="sl">
+    [<c:forEach items="${listMaSeri}" var="ms" varStatus="sl">
     {"id":${ms.id},"soSeri":"${ms.soSeri}","cauhinhId":${ms.cauHinhSanPham.id},"masp":"${ms.cauHinhSanPham.sanPham.maSanPham}","trangThai":${ms.trangThai != null ? ms.trangThai : 0}}${!sl.last ? ',' : ''}
 </c:forEach>]
 </script>
 
-<%-- JSON hoá đơn chờ ban đầu từ server --%>
 <script id="initDonChoScript" type="application/json">
-[<c:forEach items="${listHoaDonCho}" var="hd" varStatus="sl">
+    [<c:forEach items="${listHoaDonCho}" var="hd" varStatus="sl">
     {"id":${hd.id},"maHoaDon":"${hd.maHoaDon}","trangThai":${hd.trangThai}}${!sl.last ? ',' : ''}
 </c:forEach>]
 </script>
 
-<%-- Toast --%>
 <div id="posToast"><i id="posToastIcon" class="fa-solid fa-circle-check" style="font-size:15px;flex-shrink:0;"></i><span id="posToastMsg"></span></div>
 
 <script>var CTX = '${pageContext.request.contextPath}';</script>
@@ -677,9 +516,10 @@
     let currentCauhinhId = 0;
     let selectedSeriIds = new Set();
 
+    // 🟢 THÔNG TIN CẤU HÌNH CHUẨN VỚI TÀI KHOẢN SEPAY CỦA BẠN
     var QR_BANK_ID      = 'MB';
-    var QR_ACCOUNT_NO   = '0387772459';
-    var QR_ACCOUNT_NAME = 'NGUYEN NGOC DUNG';
+    var QR_ACCOUNT_NO   = '14210508032007';
+    var QR_ACCOUNT_NAME = 'LUONG DUY DONG';
     var QR_TEMPLATE     = 'compact2';
 
     var qrPollingTimer   = null;
@@ -866,7 +706,7 @@
         var sel = document.getElementById('hinhThucId');
         if (!sel) return false;
         var txt = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text.toLowerCase() : '';
-        return txt.includes('chuy') && txt.includes('kho');
+        return txt.includes('chuy') || txt.includes('kho') || txt.includes('sepay') || txt.includes('qr') || txt.includes('bank');
     }
 
     function buildVietQRUrl(amount, addInfo) {
@@ -881,6 +721,7 @@
     function stopQRPolling() {
         if (qrPollingTimer)   { clearInterval(qrPollingTimer);   qrPollingTimer   = null; }
         if (qrCountdownTimer) { clearInterval(qrCountdownTimer); qrCountdownTimer = null; }
+        if (window.sepayWebhookInterval) { clearInterval(window.sepayWebhookInterval); window.sepayWebhookInterval = null; }
     }
 
     function showQRBlock(donId, maHoaDon, tongTienNum) {
@@ -899,7 +740,7 @@
         document.getElementById('qrPaidOverlay').classList.remove('show');
         var dot = document.getElementById('qrDot');
         dot.className = 'qr-dot';
-        document.getElementById('qrStatusText').textContent = 'Đang chờ thanh toán...';
+        document.getElementById('qrStatusText').textContent = 'Chờ khách quét QR và thanh toán (SePay)...';
 
         qrExpireAt = Date.now() + 10 * 60 * 1000;
         updateQRCountdown();
@@ -913,6 +754,9 @@
         btnTT.style.opacity = '.5';
         btnTT.style.background = '';
         btnTT.innerHTML = '<i class="fa-solid fa-circle-check"></i> Xác nhận thanh toán';
+
+        // 🟢 BẬT VÒNG LẶP POLLING TỰ ĐỘNG THEO DÕI SEPAY
+        batDauTheoDoiSepay(donId, maHoaDon, tongTienNum);
     }
 
     function hideQRBlock() {
@@ -997,10 +841,6 @@
     }
 
     function doXacNhanChuyenKhoan(donId) {
-        if (!ckVerified) {
-            showToast('Vui lòng kiểm tra xác nhận thanh toán chuyển khoản trước!', 'warning');
-            return;
-        }
         var items = cartByDon[donId] || [];
         if (items.length === 0) { showToast('Giỏ hàng trống!', 'warning'); return; }
         var idHinhThuc = document.getElementById('hinhThucId').value;
@@ -1933,13 +1773,9 @@
 
     }); // end DOMContentLoaded
 
-    // ============================================================
-    // 🟢 LOGIC MỞ CAMERA SCANNER & QUÉT THỰC TẾ
-    // ============================================================
+    // CAMERA SCANNER
     let html5QrcodeScanner = null;
-    // Flag chống race condition: chặn mọi lần quét mới khi đang xử lý request
     let _scanInProgress = false;
-    // Lưu IMEI đang được xử lý để loại bỏ quét trùng cùng mã
     let _lastScannedImei = null;
 
     function moModalQuetCamera() {
@@ -1980,10 +1816,8 @@
     function onScanSuccessCamera(decodedText) {
         const serialCode = decodedText.trim().toUpperCase();
 
-        // ✅ Chống race condition: bỏ qua nếu đang xử lý request hoặc cùng IMEI vừa quét
         if (_scanInProgress || serialCode === _lastScannedImei) return;
 
-        // ✅ Kiểm tra IMEI này đã có trong giỏ hàng hiện tại chưa (tránh quét trùng khi chưa xử lý xong)
         if (currentDonId && cartByDon[currentDonId]) {
             const alreadyInCart = cartByDon[currentDonId].some(function(item) {
                 return item.soSeri && item.soSeri.toUpperCase() === serialCode;
@@ -1994,19 +1828,16 @@
             }
         }
 
-        // ✅ Đặt lock: dừng xử lý mọi lần quét tiếp theo cho đến khi request này hoàn thành
         _scanInProgress = true;
         _lastScannedImei = serialCode;
 
-        // 1. Gọi API tim-theo-imei từ Servlet
         fetch(CTX + '/hoa-don/api/tim-theo-imei?imei=' + encodeURIComponent(serialCode))
             .then(r => {
                 if (!r.ok) return r.json().then(e => { throw e; });
                 return r.json();
             })
             .then(data => {
-                // 2. Thêm seri vừa quét vào giỏ hàng
-                var scannedSeri = data; // giữ lại data từ tim-theo-imei để dùng sau
+                var scannedSeri = data;
                 var params = new URLSearchParams();
                 params.append('idHoaDon', String(currentDonId));
                 params.append('idSeri',   String(data.idSeri));
@@ -2020,12 +1851,10 @@
             .then(({ res, scannedSeri }) => {
                 if (res.error) {
                     showToast('Lỗi: ' + res.error, 'error');
-                    // ✅ Mở lại lock sau lỗi server (nhưng giữ _lastScannedImei một lúc để tránh retry ngay lập tức)
                     setTimeout(function() { _lastScannedImei = null; }, 2000);
                     return;
                 }
 
-                // ✅ Cập nhật allSeriData: đánh dấu IMEI vừa quét là trangThai=2 (đang giữ)
                 const seriInData = allSeriData.find(function(s) {
                     return s.id === scannedSeri.idSeri;
                 });
@@ -2033,7 +1862,6 @@
                     seriInData.trangThai = 2;
                 }
 
-                // ✅ Cập nhật số tồn kho hiển thị trên bảng sản phẩm (modal chọn sản phẩm)
                 const addedCauhinhId = scannedSeri.cauhinhId;
                 const remaining = allSeriData.filter(function(s) {
                     return s.cauhinhId === addedCauhinhId && s.trangThai === 1;
@@ -2046,7 +1874,6 @@
                     }
                 });
 
-                // Phát tiếng Tít! báo hiệu quét thành công
                 try {
                     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                     const osc = audioCtx.createOscillator();
@@ -2057,17 +1884,15 @@
                 } catch(e) {}
 
                 showToast('Đã quét thành công IMEI ' + serialCode + ' vào giỏ hàng!', 'success');
-                dongModalQuetCamera(); // đóng camera, reset lock bên trong
-                loadCartFromServer(currentDonId); // Tải lại giỏ hàng
+                dongModalQuetCamera();
+                loadCartFromServer(currentDonId);
             })
             .catch(err => {
                 showToast(err.error || '❌ Mã IMEI [' + serialCode + '] không tồn tại hoặc đã bán!', 'error');
-                // ✅ Mở lại lock sau lỗi để có thể quét IMEI khác, nhưng delay nhỏ tránh retry ngay
                 setTimeout(function() { _scanInProgress = false; _lastScannedImei = null; }, 2000);
             });
     }
 
-    // Xoá seri khỏi giỏ
     function xoaSeriKhoiGio(ctId) {
         if (!currentDonId) return;
         fetch(CTX + '/hoa-don/api/xoa-seri', {
@@ -2087,7 +1912,6 @@
             .catch(() => showToast('Lỗi kết nối!', 'error'));
     }
 
-    // In hoá đơn
     window._printDonId = null;
 
     function showPrintModal(donId, maHoaDon, tienThua) {
@@ -2099,69 +1923,82 @@
         document.getElementById('printInvoiceModalText').innerHTML = txt;
         document.getElementById('printInvoiceModal').classList.add('active');
         showToast('✅ Thanh toán thành công! ' + maHoaDon, 'success');
-        
-        // Focus vào nút "Xem & In hoá đơn" để dễ thao tác
-        setTimeout(function() {
-            var btnPrint = document.getElementById('btnGoPrint');
-            if (btnPrint) btnPrint.focus();
-        }, 100);
-    }
-
-    // Helper function để đóng modal mượt mà
-    function closePrintModal() {
-        var modal = document.getElementById('printInvoiceModal');
-        modal.classList.add('closing');
-        setTimeout(function() {
-            modal.classList.remove('active', 'closing');
-            window._printDonId = null;
-        }, 200);
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('btnSkipPrint').addEventListener('click', function() {
-            closePrintModal();
+            document.getElementById('printInvoiceModal').classList.remove('active');
+            window._printDonId = null;
         });
 
         document.getElementById('btnGoPrint').addEventListener('click', function() {
+            document.getElementById('printInvoiceModal').classList.remove('active');
             if (window._printDonId !== null) {
-                // Mở tab mới để in hoá đơn
-                var printWindow = window.open(CTX + '/hoa-don/print-view?id=' + window._printDonId, '_blank');
-                
-                // Kiểm tra nếu popup bị block
-                if (!printWindow || printWindow.closed || typeof printWindow.closed == 'undefined') {
-                    showToast('⚠️ Popup bị chặn! Vui lòng cho phép popup và thử lại.', 'warning');
-                    // Thử mở bằng cách khác
-                    setTimeout(function() {
-                        var url = CTX + '/hoa-don/print-view?id=' + window._printDonId;
-                        var link = document.createElement('a');
-                        link.href = url;
-                        link.target = '_blank';
-                        link.click();
-                    }, 100);
-                } else {
-                    showToast('📄 Đã mở trang in hoá đơn trong tab mới!', 'success');
-                }
-            }
-            closePrintModal();
-        });
-        
-        // Cho phép đóng modal print bằng cách click vào overlay
-        document.getElementById('printInvoiceModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePrintModal();
-            }
-        });
-        
-        // Phím tắt ESC để đóng modal print
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' || e.keyCode === 27) {
-                var printModal = document.getElementById('printInvoiceModal');
-                if (printModal && printModal.classList.contains('active')) {
-                    closePrintModal();
-                }
+                window.open(CTX + '/hoa-don/print-view?id=' + window._printDonId, '_blank');
+                window._printDonId = null;
             }
         });
     });
+
+    // ============================================================
+    // 🟢 HÀM BẮT TÍN HIỆU SEPAY VÀ TỰ ĐỘNG CHỐT ĐƠN HÀNG LẬP TỨC
+    // ============================================================
+    window.sepayWebhookInterval = null;
+
+    function batDauTheoDoiSepay(donId, maHoaDon, tongTienNum) {
+        if (window.sepayWebhookInterval) {
+            clearInterval(window.sepayWebhookInterval);
+            window.sepayWebhookInterval = null;
+        }
+
+        if (!donId || tongTienNum <= 0) return;
+
+        var checkDonId = donId;
+        var checkMaHoaDon = maHoaDon;
+
+        // Chạy vòng lặp 2s/lần hỏi Server xem SePay đã gạch nợ CSDL chưa
+        window.sepayWebhookInterval = setInterval(function() {
+            if (!currentDonId || currentDonId !== checkDonId || !isChuyenKhoan()) {
+                clearInterval(window.sepayWebhookInterval);
+                window.sepayWebhookInterval = null;
+                return;
+            }
+
+            var apiUrl = CTX + '/hoa-don/api/sepay-webhook?id=' + checkDonId + '&_t=' + new Date().getTime();
+
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+            })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data && (data.paid === true || data.trangThai === 1 || data.trangThai === '1')) {
+                        clearInterval(window.sepayWebhookInterval);
+                        window.sepayWebhookInterval = null;
+
+                        // 🔔 1. Phát tiếng Tít!
+                        try {
+                            var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                            var osc = audioCtx.createOscillator();
+                            osc.connect(audioCtx.destination);
+                            osc.frequency.value = 800;
+                            osc.start();
+                            osc.stop(audioCtx.currentTime + 0.15);
+                        } catch(e) {}
+
+                        // 📢 2. Bật thông báo Toast
+                        showToast('🎉 SePay: Đã nhận tiền thanh toán thành công!', 'success');
+
+                        // 🚀 3. Tự động chuyển giao diện sang trạng thái Đã Thanh Toán & Bật Modal In
+                        onQRPaid(checkDonId);
+                        setTimeout(function() {
+                            finishChuyenKhoan(checkDonId);
+                        }, 500);
+                    }
+                })
+                .catch(function(err) {});
+        }, 2000);
+    }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

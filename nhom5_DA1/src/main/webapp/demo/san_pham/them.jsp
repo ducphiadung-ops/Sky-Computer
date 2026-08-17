@@ -518,19 +518,45 @@
             // Ẩn error box khi người dùng đang gõ lại
             $('#imeiErrorBox').addClass('d-none').html('');
 
-            $('#lblCountImeiModal').text(lines.length + " Máy mới");
+            // Lấy index của biến thể hiện tại
+            const currentIndex = document.getElementById("currentInputIndexTarget").value;
+            
+            // Lấy IMEI đã lưu của biến thể này
+            const textDaLuu = document.getElementById("imei-hidden-" + currentIndex).value;
+            const mangDaLuu = textDaLuu ? textDaLuu.split('\n').filter(s => s.trim().length > 0) : [];
 
+            // Tính tổng số lượng (đã lưu + mới nhập)
+            const tongSoLuong = mangDaLuu.length + lines.length;
+            $('#lblCountImeiModal').text(tongSoLuong + " Máy");
+
+            // Tạo HTML hiển thị IMEI đã lưu
+            let htmlDaLuu = '';
+            if (mangDaLuu.length > 0) {
+                htmlDaLuu = '<div class="mb-2"><div class="mb-1 fw-semibold text-secondary" style="font-size:11px;">IMEI đã lưu (' + mangDaLuu.length + '):</div>' +
+                    mangDaLuu.map(l =>
+                        '<span class="badge me-1 mb-1 border border-success-subtle" ' +
+                        'style="font-size:11px; background-color:#f0fdf4; color:#16a34a;">' + l.trim() + '</span>'
+                    ).join('') + '</div>';
+            }
+
+            // Tạo HTML hiển thị IMEI mới đang nhập
+            let htmlMoi = '';
             if (lines.length > 0) {
-                let htmlPreview = lines.map((l, index) => {
-                    const ok = imeiRegex.test(l);
-                    return '<span class="badge me-1 mb-1 d-inline-flex align-items-center ' +
-                        (ok ? 'bg-white text-dark border' : 'border border-danger-subtle text-danger') + '" ' +
-                        'style="font-size:11px; background-color:' + (ok ? '#ffffff' : '#fff1f2') + ';">' +
-                        l + (ok ? '' : ' ⚠️') +
-                        '<i class="fa-solid fa-xmark ms-1 text-danger" style="cursor:pointer; font-size:10px;" onclick="xóaNhanhMotMaImei(' + index + ')"></i>' +
-                        '</span>';
-                }).join('');
-                $('#boxImeiListPreview').html(htmlPreview);
+                htmlMoi = '<div><div class="mb-1 fw-semibold text-secondary" style="font-size:11px;">IMEI mới đang nhập (' + lines.length + '):</div>' +
+                    lines.map((l, index) => {
+                        const ok = imeiRegex.test(l);
+                        return '<span class="badge me-1 mb-1 d-inline-flex align-items-center ' +
+                            (ok ? 'bg-white text-dark border' : 'border border-danger-subtle text-danger') + '" ' +
+                            'style="font-size:11px; background-color:' + (ok ? '#ffffff' : '#fff1f2') + ';">' +
+                            l + (ok ? '' : ' ⚠️') +
+                            '<i class="fa-solid fa-xmark ms-1 text-danger" style="cursor:pointer; font-size:10px;" onclick="xóaNhanhMotMaImei(' + index + ')"></i>' +
+                            '</span>';
+                    }).join('') + '</div>';
+            }
+
+            // Hiển thị cả IMEI đã lưu và IMEI mới
+            if (htmlDaLuu || htmlMoi) {
+                $('#boxImeiListPreview').html(htmlDaLuu + htmlMoi);
             } else {
                 $('#boxImeiListPreview').html("Chưa có mã nào");
             }

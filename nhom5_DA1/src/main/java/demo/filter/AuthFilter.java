@@ -33,7 +33,7 @@ public class AuthFilter implements Filter {
         String uri = req.getRequestURI();
         String ctx = req.getContextPath();
 
-        // Loại trừ các tài nguyên công khai (login, static files)
+        // Loại trừ các tài nguyên công khai (login, static files, sepay webhook)
         if (isPublicResource(uri, ctx)) {
             chain.doFilter(request, response);
             return;
@@ -57,6 +57,10 @@ public class AuthFilter implements Filter {
         if (uri.startsWith(ctx + "/login/")) return true;
         // Trực tiếp JSP login (đường dẫn cũ từ index.jsp)
         if (uri.contains("/demo/login/")) return true;
+
+        // 🟢 MỞ CỬA CÔNG KHAI CHO SEPAY WEBHOOK & POLLING KIỂM TRA THANH TOÁN
+        if (uri.contains("/hoa-don/api/sepay-webhook")) return true;
+
         // Tài nguyên tĩnh
         if (uri.endsWith(".css") || uri.endsWith(".js")
                 || uri.endsWith(".png") || uri.endsWith(".jpg")

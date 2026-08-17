@@ -94,10 +94,10 @@ public class HoaDonRepository {
     public List<HoaDon> getTop5() {
         try (Session session = HibernateConfig.getFACTORY().openSession()) {
             return session.createQuery(
-                    "SELECT h FROM HoaDon h LEFT JOIN h.khachHang " +
-                    "WHERE h.trangThai = 1 " +
-                    "ORDER BY h.id DESC",
-                    HoaDon.class)
+                            "SELECT h FROM HoaDon h LEFT JOIN h.khachHang " +
+                                    "WHERE h.trangThai = 1 " +
+                                    "ORDER BY h.id DESC",
+                            HoaDon.class)
                     .setMaxResults(5)
                     .list();
         } catch (Exception e) {
@@ -111,10 +111,10 @@ public class HoaDonRepository {
         try (Session session = HibernateConfig.getFACTORY().openSession()) {
             // LEFT JOIN để giữ lại hóa đơn không có khách hàng (hóa đơn chờ)
             StringBuilder hql = new StringBuilder(
-                "SELECT h FROM HoaDon h " +
-                "LEFT JOIN h.khachHang kh " +
-                "LEFT JOIN h.nhanVien nv " +
-                "WHERE 1=1 "
+                    "SELECT h FROM HoaDon h " +
+                            "LEFT JOIN h.khachHang kh " +
+                            "LEFT JOIN h.nhanVien nv " +
+                            "WHERE 1=1 "
             );
 
             if (keyword != null && !keyword.trim().isEmpty()) {
@@ -158,14 +158,14 @@ public class HoaDonRepository {
 
     // Lấy một trang hóa đơn theo bộ lọc — dùng cho trang quản lý (phân trang)
     public List<HoaDon> timKiemVaLocPhanTrang(String keyword, String trangThai, String ngayTao,
-                                               int page, int pageSize) {
+                                              int page, int pageSize) {
         List<HoaDon> list = new ArrayList<>();
         try (Session session = HibernateConfig.getFACTORY().openSession()) {
             StringBuilder hql = new StringBuilder(
-                "SELECT h FROM HoaDon h " +
-                "LEFT JOIN h.khachHang kh " +
-                "LEFT JOIN h.nhanVien nv " +
-                "WHERE 1=1 "
+                    "SELECT h FROM HoaDon h " +
+                            "LEFT JOIN h.khachHang kh " +
+                            "LEFT JOIN h.nhanVien nv " +
+                            "WHERE 1=1 "
             );
             if (keyword != null && !keyword.trim().isEmpty()) {
                 hql.append("AND (h.maHoaDon LIKE :keyword " +
@@ -207,10 +207,10 @@ public class HoaDonRepository {
     public long demTongHoaDon(String keyword, String trangThai, String ngayTao) {
         try (Session session = HibernateConfig.getFACTORY().openSession()) {
             StringBuilder hql = new StringBuilder(
-                "SELECT COUNT(h) FROM HoaDon h " +
-                "LEFT JOIN h.khachHang kh " +
-                "LEFT JOIN h.nhanVien nv " +
-                "WHERE 1=1 "
+                    "SELECT COUNT(h) FROM HoaDon h " +
+                            "LEFT JOIN h.khachHang kh " +
+                            "LEFT JOIN h.nhanVien nv " +
+                            "WHERE 1=1 "
             );
             if (keyword != null && !keyword.trim().isEmpty()) {
                 hql.append("AND (h.maHoaDon LIKE :keyword " +
@@ -251,8 +251,8 @@ public class HoaDonRepository {
         try (Session session = HibernateConfig.getFACTORY().openSession()) {
             return session.createQuery(
                     "FROM HoaDon h WHERE h.trangThai = 2 " +
-                    "AND h.maHoaDon IS NOT NULL AND h.maHoaDon NOT LIKE '%null%' " +
-                    "ORDER BY h.ngayLap DESC",
+                            "AND h.maHoaDon IS NOT NULL AND h.maHoaDon NOT LIKE '%null%' " +
+                            "ORDER BY h.ngayLap DESC",
                     HoaDon.class).list();
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,11 +265,11 @@ public class HoaDonRepository {
     public List<HoaDon> getHoaDonChoByNhanVien(Integer idNhanVien) {
         try (Session session = HibernateConfig.getFACTORY().openSession()) {
             return session.createQuery(
-                    "FROM HoaDon h WHERE h.trangThai = 2 " +
-                    "AND h.nhanVien.id = :idNhanVien " +
-                    "AND h.maHoaDon IS NOT NULL AND h.maHoaDon NOT LIKE '%null%' " +
-                    "ORDER BY h.ngayLap DESC",
-                    HoaDon.class)
+                            "FROM HoaDon h WHERE h.trangThai = 2 " +
+                                    "AND h.nhanVien.id = :idNhanVien " +
+                                    "AND h.maHoaDon IS NOT NULL AND h.maHoaDon NOT LIKE '%null%' " +
+                                    "ORDER BY h.ngayLap DESC",
+                            HoaDon.class)
                     .setParameter("idNhanVien", idNhanVien)
                     .list();
         } catch (Exception e) {
@@ -328,9 +328,9 @@ public class HoaDonRepository {
         try (Session session = HibernateConfig.getFACTORY().openSession()) {
             java.sql.Date homNay = java.sql.Date.valueOf(java.time.LocalDate.now());
             return session.createQuery(
-                    "FROM HoaDon h WHERE h.trangThai = 2 " +
-                    "AND h.ngayLap < :homNay",
-                    HoaDon.class)
+                            "FROM HoaDon h WHERE h.trangThai = 2 " +
+                                    "AND h.ngayLap < :homNay",
+                            HoaDon.class)
                     .setParameter("homNay", homNay)
                     .list();
         } catch (Exception e) {
@@ -350,7 +350,7 @@ public class HoaDonRepository {
             java.sql.Date homNay = java.sql.Date.valueOf(java.time.LocalDate.now());
             int soLuong = session.createNativeQuery(
                     "UPDATE hoa_don SET trang_thai = 3 " +
-                    "WHERE trang_thai = 2 AND CAST(ngay_lap AS DATE) < :homNay AND is_deleted = 0"
+                            "WHERE trang_thai = 2 AND CAST(ngay_lap AS DATE) < :homNay AND is_deleted = 0"
             ).setParameter("homNay", homNay).executeUpdate();
             tx.commit();
             return soLuong;
@@ -359,5 +359,36 @@ public class HoaDonRepository {
             return 0;
         }
     }
+    public HoaDon findByMa(String maHoaDon) {
+        if (maHoaDon == null || maHoaDon.trim().isEmpty()) {
+            return null;
+        }
+        String maClean = maHoaDon.trim().replaceAll("[^A-Za-z0-9]", ""); // Xóa hết ký tự đặc biệt
+
+        try (Session session = HibernateConfig.getFACTORY().openSession()) {
+            // 1. Thử tìm chính xác
+            HoaDon hd = session.createQuery(
+                            "FROM HoaDon h WHERE REPLACE(REPLACE(h.maHoaDon, '_', ''), ' ', '') = :maClean",
+                            HoaDon.class)
+                    .setParameter("maClean", maClean)
+                    .setMaxResults(1)
+                    .uniqueResult();
+
+            if (hd != null) return hd;
+
+            // 2. Thử tìm chứa chuỗi (dành cho trường hợp mã ngắn)
+            return session.createQuery(
+                            "FROM HoaDon h WHERE :maClean LIKE CONCAT('%', REPLACE(REPLACE(h.maHoaDon, '_', ''), ' ', ''), '%')",
+                            HoaDon.class)
+                    .setParameter("maClean", maClean)
+                    .setMaxResults(1)
+                    .uniqueResult();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
 

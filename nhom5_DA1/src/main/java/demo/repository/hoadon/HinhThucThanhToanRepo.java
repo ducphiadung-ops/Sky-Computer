@@ -37,4 +37,23 @@ public class HinhThucThanhToanRepo {
             return null;
         }
     }
+
+    /**
+     * Tìm hình thức thanh toán đầu tiên có tên chứa từ khóa (không phân biệt hoa thường).
+     * Dùng để tự động gán hình thức "Chuyển khoản" trong webhook SePay.
+     */
+    public HinhThucThanhToan findByTenContaining(String keyword) {
+        try (Session session = HibernateConfig.getFACTORY().openSession()) {
+            List<HinhThucThanhToan> list = session.createQuery(
+                    "FROM HinhThucThanhToan h WHERE LOWER(h.tenHinhThuc) LIKE LOWER(:kw)",
+                    HinhThucThanhToan.class)
+                    .setParameter("kw", "%" + keyword + "%")
+                    .setMaxResults(1)
+                    .list();
+            return list.isEmpty() ? null : list.get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

@@ -37,10 +37,19 @@
         /* Vùng nội dung hóa đơn */
         .content-area { max-width: 1100px; margin: 30px auto; padding: 30px; background: #fff; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border-radius: 8px;}
 
-        /* Header */
-        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        /* Header với logo bên trái và QR bên phải */
+        .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+        .page-header-left { display: flex; align-items: center; gap: 16px; }
+        .logo-container img { height: 50px; }
         .page-title h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
         .page-title p { font-size: 13px; color: var(--text-muted); }
+        
+        /* QR Code bên phải header */
+        .header-qr-container { text-align: center; }
+        .header-qr-title { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+        .header-qr-box { padding: 10px; background: #fff; border: 2px solid var(--border-color); border-radius: 8px; display: inline-block; }
+        .header-qr-box img { display: block; width: 120px; height: 120px; }
+        .header-qr-note { font-size: 10px; color: var(--text-muted); margin-top: 6px; }
 
         /* Stepper Trạng thái */
         .status-stepper-wrap { border: 1px solid var(--border-color); border-radius: 8px; padding: 30px 40px; margin-bottom: 24px; }
@@ -71,6 +80,8 @@
         td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); font-size: 13px; vertical-align: top; }
         .spec-tag { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: var(--text-muted); margin-right: 4px; display: inline-block; margin-top: 6px; }
         .barcode-wrap { border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; font-family: monospace; font-size: 12px; font-weight: 600;}
+        
+        /* Xóa CSS của QR section cũ - không cần nữa */
 
         /* ===== PRINT STYLES ===== */
         @media print {
@@ -103,30 +114,26 @@
 </div>
 
 <div class="content-area" id="invoice-content">
+    <!-- Header: Logo bên trái, Mã HĐ giữa, QR bên phải -->
     <div class="page-header">
-        <div class="page-title">
-            <h2>Chi tiết hóa đơn: ${hoaDon.maHoaDon}</h2>
-            <p>Quản lý chi tiết luồng tiền, thông tin khách hàng và sản phẩm xuất.</p>
-        </div>
-        <div>
-            <img src="/img/logo.jpg" alt="Logo" style="height: 40px;">
-        </div>
-    </div>
-
-    <!-- Stepper 2 trạng thái -->
-    <c:set var="daXuLy" value="${hoaDon.trangThai == 1}" />
-    <div class="status-stepper-wrap">
-        <div class="status-stepper">
-            <div class="status-line"></div>
-            <div class="status-step completed">
-                <div class="step-circle"><i class="fa-solid fa-check"></i></div>
-                <div class="step-label">Chờ xử lý</div>
+        <div class="page-header-left">
+            <div class="logo-container">
+                <img src="/img/logo.jpg" alt="Logo">
             </div>
-            <div class="status-line ${daXuLy ? 'completed' : ''}"></div>
-            <div class="status-step ${daXuLy ? 'completed' : ''}">
-                <div class="step-circle"><i class="fa-solid fa-check"></i></div>
-                <div class="step-label">Đã xử lý</div>
+            <div class="page-title">
+                <h2>Hóa đơn: ${hoaDon.maHoaDon}</h2>
+                <p>Ngày lập: <fmt:formatDate value="${hoaDon.ngayLap}" pattern="dd/MM/yyyy"/></p>
             </div>
+        </div>
+        
+        <div class="header-qr-container">
+            <div class="header-qr-title">MÃ QR HÓA ĐƠN</div>
+            <div class="header-qr-box">
+                <img src="${pageContext.request.contextPath}/qr-hoa-don?id=${hoaDon.id}&size=120" 
+                     alt="QR Code ${hoaDon.maHoaDon}"
+                     onerror="this.style.display='none';">
+            </div>
+            <div class="header-qr-note">Quét để xem chi tiết</div>
         </div>
     </div>
 
@@ -163,9 +170,18 @@
             <div class="info-item"><span class="info-label">Hình thức</span><span class="info-value">${empty lichSu ? 'Tiền mặt' : lichSu.phuongThucThanhToan}</span></div>
             <div class="info-item">
                 <span class="info-label">Trạng thái</span>
-                <span class="info-value"><span class="badge-success">${daThanhToan ? 'Đã thanh toán' : 'Chưa thanh toán'}</span></span>
+                <span class="info-value">
+                    <c:choose>
+                        <c:when test="${hoaDon.trangThai == 1}">
+                            <span class="badge-success">Đã thanh toán</span>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="badge-success" style="background: #fee; color: #c00;">Chưa thanh toán</span>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
             </div>
-            <div class="info-item"><span class="info-label">Ngày thanh toán</span><span class="info-value"><fmt:formatDate value="${hoaDon.ngayLap}" pattern="yyyy-MM-dd HH:mm:ss.SSS"/></span></div>
+            <div class="info-item"><span class="info-label">Ngày thanh toán</span><span class="info-value"><fmt:formatDate value="${hoaDon.ngayThanhToan != null ? hoaDon.ngayThanhToan : hoaDon.ngayLap}" pattern="dd/MM/yyyy HH:mm"/></span></div>
             <div class="info-item"><span class="info-label">Ghi chú</span><span class="info-value" style="font-weight: 400; font-style: italic;">${empty lichSu ? 'Đã thu đủ' : lichSu.ghiChu}</span></div>
         </div>
     </div>

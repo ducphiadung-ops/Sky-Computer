@@ -178,19 +178,6 @@
                 <i class="fa-solid fa-download"></i> Xuất file
             </button>
             <c:if test="${not isNhanVien}">
-                <button class="btn btn-outline btn-icon" title="Xuất mã QR">
-                    <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-                        <path d="M1 1h9v9h-9z" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                        <rect x="3.4" y="3.4" width="4.2" height="4.2"/>
-                        <path d="M19 1h9v9h-9z" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                        <rect x="21.4" y="3.4" width="4.2" height="4.2"/>
-                        <path d="M1 19h9v9h-9z" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                        <rect x="3.4" y="21.4" width="4.2" height="4.2"/>
-                        <rect x="13" y="1" width="2.2" height="2.2"/>
-                        <rect x="13" y="13" width="2.2" height="2.2"/>
-                        <rect x="19" y="19" width="2.2" height="2.2"/>
-                    </svg>
-                </button>
                 <a href="${pageContext.request.contextPath}/hoa-don/ban-hang" class="btn btn-primary">
                     <i class="fa-solid fa-plus"></i> Tạo hóa đơn
                 </a>
@@ -235,7 +222,7 @@
                                     <span class="invoice-id">${hd.maHoaDon}</span>
                                 </td>
                                 <td class="col-nv">
-                                    <div class="employee-name">${hd.nhanVien != null ? hd.nhanVien.hoTen : '—'}</div>
+                                    <div class="employee-name">${hd.nhanVien != null ? hd.nhanVien.maNhanVien : '—'}</div>
                                 </td>
                                 <td class="col-khach">
                                     <div class="customer-info">
