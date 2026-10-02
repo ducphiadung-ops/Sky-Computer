@@ -144,7 +144,7 @@
             <div class="info-item"><span class="info-label">Tên khách hàng</span><span class="info-value"><c:choose><c:when test="${not empty khachHang.tenKhachHang}">${khachHang.tenKhachHang}</c:when><c:otherwise>Khách lẻ</c:otherwise></c:choose></span></div>
             <div class="info-item"><span class="info-label">Số điện thoại</span><span class="info-value">${khachHang.sdt}</span></div>
             <div class="info-item"><span class="info-label">Email</span><span class="info-value">${khachHang.email}</span></div>
-            <div class="info-item" style="flex-direction: column;"><span class="info-label">Địa chỉ nhận</span><span class="info-value" style="text-align: left; margin-top: 6px;">${diaChi.diaChiCuThe}, ${diaChi.phuongXa}, ${diaChi.quanHuyen}, ${diaChi.tinhThanh}</span></div>
+            <div class="info-item" style="flex-direction: column;"><span class="info-label">Địa chỉ</span><span class="info-value" style="text-align: left; margin-top: 6px;">${diaChi.diaChiCuThe}, ${diaChi.phuongXa}, ${diaChi.quanHuyen}, ${diaChi.tinhThanh}</span></div>
         </div>
 
         <div class="info-card">

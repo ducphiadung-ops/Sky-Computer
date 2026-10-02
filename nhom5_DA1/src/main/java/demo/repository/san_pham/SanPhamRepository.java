@@ -164,7 +164,6 @@ public class  SanPhamRepository {
             }
             if (idThuongHieu != null) hql.append(" AND sp.thuongHieu.id = :idThuongHieu");
             if (trangThai != null)    hql.append(" AND sp.trangThai = :trangThai");
-            else                      hql.append(" AND sp.trangThai = 1");
             if (giaMin != null)       hql.append(" AND sp.giaBan >= :giaMin");
             if (giaMax != null)       hql.append(" AND sp.giaBan <= :giaMax");
 
@@ -209,7 +208,6 @@ public class  SanPhamRepository {
             }
             if (idThuongHieu != null) hql.append(" AND sp.thuongHieu.id = :idThuongHieu");
             if (trangThai != null)    hql.append(" AND sp.trangThai = :trangThai");
-            else                      hql.append(" AND sp.trangThai = 1");
             if (giaMin != null)       hql.append(" AND sp.giaBan >= :giaMin");
             if (giaMax != null)       hql.append(" AND sp.giaBan <= :giaMax");
             hql.append(" ORDER BY sp.id DESC");

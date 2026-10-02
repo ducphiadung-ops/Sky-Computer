@@ -507,19 +507,26 @@ public class SanPhamServlet extends HttpServlet {
         try { if (giaMaxStr       != null && !giaMaxStr.isEmpty())       giaMax       = new java.math.BigDecimal(giaMaxStr); } catch (Exception ignored) {}
         try { if (pageStr         != null && !pageStr.isEmpty())         currentPage  = Math.max(1, Integer.parseInt(pageStr)); } catch (Exception ignored) {}
 
+        // Mặc định hiển thị sản phẩm đang hoạt động khi vào trang lần đầu
         boolean coLoc = (keyword != null && !keyword.isEmpty())
                 || idThuongHieu != null
                 || (trangThaiStr != null && !trangThaiStr.isEmpty())
                 || giaMin != null || giaMax != null;
 
+        // Nếu không có bộ lọc nào và trangThai chưa được set → mặc định = 1 (đang hoạt động)
+        if (!coLoc && trangThai == null) {
+            trangThai = 1;
+            trangThaiStr = "1";
+        }
+
         // --- đếm tổng để tính số trang ---
         long totalRecords = sanPhamRepo.countLocDaKieu(
-                coLoc ? keyword : null,
+                keyword,
                 null,
-                coLoc ? idThuongHieu : null,
-                coLoc ? trangThai : null,
-                coLoc ? giaMin : null,
-                coLoc ? giaMax : null
+                idThuongHieu,
+                trangThai,
+                giaMin,
+                giaMax
         );
 
         int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
@@ -530,12 +537,12 @@ public class SanPhamServlet extends HttpServlet {
 
         // --- lấy trang hiện tại ---
         List listSanPham = sanPhamRepo.locDaKieuPhanTrang(
-                coLoc ? keyword : null,
+                keyword,
                 null,
-                coLoc ? idThuongHieu : null,
-                coLoc ? trangThai : null,
-                coLoc ? giaMin : null,
-                coLoc ? giaMax : null,
+                idThuongHieu,
+                trangThai,
+                giaMin,
+                giaMax,
                 offset, PAGE_SIZE
         );
 

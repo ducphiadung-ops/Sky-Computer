@@ -413,8 +413,10 @@
                     <th>Số điện thoại</th>
                     <th>Email</th>
                     <th>Địa chỉ</th>
-                    <th class="text-center" style="width: 110px;">Trạng thái</th>
-                    <th class="text-center" style="width: 100px;">Hành động</th>
+                    <c:if test="${!isNhanVien}">
+                        <th class="text-center" style="width: 110px;">Trạng thái</th>
+                        <th class="text-center" style="width: 100px;">Hành động</th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody>
@@ -422,7 +424,7 @@
                 <c:forEach items="${listNV}" var="nv" varStatus="status">
                     <!-- [CẬP NHẬT CHỖ NÀY]: Tự động tối dòng từ đầu nếu nhân viên đang ở trạng thái false (nghỉ việc) -->
                     <tr class="${nv.trangThai == 1 ? '' : 'row-inactive'}">
-                        <td>${status.index + 1}</td>
+                        <td>${(currentPage - 1) * 10 + status.index + 1}</td>
 
                         <td><span class="cust-code">${nv.maNhanVien}</span></td>
 
@@ -451,38 +453,32 @@
 
                         <td>${not empty nv.diaChi ? nv.diaChi : '---'}</td>
 
-                        <td class="text-center">
-                            <div class="switch-wrapper">
-                                <label class="switch">
-                                    <!-- [CẬP NHẬT CHỖ NÀY]: Thêm từ khóa 'this' vào hàm để xác định vị trí dòng click -->
-                                    <input type="checkbox"
-                                        ${nv.trangThai == 1 ? 'checked' : ''}
-                                           onchange="doiTrangThai(${nv.id}, this.checked, this)">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </td>
+                        <c:if test="${!isNhanVien}">
+                            <td class="text-center">
+                                <div class="switch-wrapper">
+                                    <label class="switch">
+                                        <input type="checkbox"
+                                            ${nv.trangThai == 1 ? 'checked' : ''}
+                                               onchange="doiTrangThai(${nv.id}, this.checked, this)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </td>
 
-                        <td class="text-center">
-                            <div class="table-actions">
-                                <a href="${pageContext.request.contextPath}/nhan-vien/view-update?id=${nv.id}" class="btn-icon btn-edit" title="Sửa thông tin">
+                            <td class="text-center">
+                                <a href="${pageContext.request.contextPath}/nhan-vien/view-update?id=${nv.id}" 
+                                   class="btn-icon btn-edit" 
+                                   title="Sửa thông tin">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
-
-                                <a href="${pageContext.request.contextPath}/nhan-vien/delete?id=${nv.id}"
-                                   class="btn-icon btn-delete"
-                                   title="Xóa nhân sự"
-                                   onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này khỏi danh sách?');">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
+                            </td>
+                        </c:if>
                     </tr>
                 </c:forEach>
 
                 <c:if test="${empty listNV}">
                     <tr>
-                        <td colspan="10" class="text-center" style="padding: 40px; color: var(--text-muted)">
+                        <td colspan="${isNhanVien ? '8' : '10'}" class="text-center" style="padding: 40px; color: var(--text-muted)">
                             Không có dữ liệu nhân viên nào tồn tại trên hệ thống.
                         </td>
                     </tr>
@@ -492,12 +488,35 @@
             </table>
 
             <div class="pagination-area">
-                <div class="page-info">Hiển thị thông tin hồ sơ nhân sự Skycomputer</div>
+                <div class="page-info">
+                    Hiển thị ${(currentPage - 1) * 10 + 1} - ${(currentPage - 1) * 10 + fn:length(listNV)} 
+                    trong tổng số ${totalRecords} nhân viên
+                </div>
                 <ul class="pagination">
-                    <li class="page-item"><i class="fa-solid fa-chevron-left"></i></li>
-                    <li class="page-item active">1</li>
-                    <li class="page-item">2</li>
-                    <li class="page-item"><i class="fa-solid fa-chevron-right"></i></li>
+                    <c:if test="${currentPage > 1}">
+                        <li class="page-item" onclick="chuyenTrang(${currentPage - 1})">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </li>
+                    </c:if>
+                    
+                    <c:forEach begin="1" end="${totalPages}" var="i">
+                        <c:if test="${i == 1 || i == totalPages || (i >= currentPage - 2 && i <= currentPage + 2)}">
+                            <li class="page-item ${i == currentPage ? 'active' : ''}" 
+                                onclick="chuyenTrang(${i})">${i}</li>
+                        </c:if>
+                        <c:if test="${i == currentPage - 3 && currentPage > 4}">
+                            <li class="page-item" style="pointer-events: none;">...</li>
+                        </c:if>
+                        <c:if test="${i == currentPage + 3 && currentPage < totalPages - 3}">
+                            <li class="page-item" style="pointer-events: none;">...</li>
+                        </c:if>
+                    </c:forEach>
+                    
+                    <c:if test="${currentPage < totalPages}">
+                        <li class="page-item" onclick="chuyenTrang(${currentPage + 1})">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </li>
+                    </c:if>
                 </ul>
             </div>
         </div>
@@ -539,6 +558,12 @@
                 element.checked = !trangThai;
                 row.classList.toggle('row-inactive');
             });
+    }
+
+    function chuyenTrang(page) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', page);
+        window.location.href = url.toString();
     }
 </script>
 

@@ -380,7 +380,7 @@
                 </tr></thead>
                 <tbody id="dbProductList">
                 <c:forEach items="${listSanPham}" var="sp" varStatus="loop">
-                    <tr data-name="${sp.sanPham.tenSanPham}" data-masp="${sp.sanPham.maSanPham}" data-cauhinhid="${sp.cauHinhSanPham.id}" data-mausac="${sp.cauHinhSanPham.mauSac.tenMauSac}" data-cpu="${sp.cauHinhSanPham.cpu.tenCpu}" data-ram="${sp.cauHinhSanPham.ram.dungLuongRam}">
+                    <tr data-name="${sp.sanPham.tenSanPham}" data-masp="${sp.sanPham.maSanPham}" data-cauhinhid="${sp.cauHinhSanPham.id}" data-mausac="${sp.cauHinhSanPham.mauSac.tenMauSac}" data-cpu="${sp.cauHinhSanPham.cpu.tenCpu}" data-ram="${sp.cauHinhSanPham.ram.dungLuongRam}" data-tonkho="${sp.tonKho}" style="${sp.tonKho <= 0 ? 'display:none;' : ''}">
                         <td style="text-align:center;">${loop.index+1}</td>
                         <td style="color:var(--primary);font-weight:600;font-size:12px;">${sp.sanPham.maSanPham}</td>
                         <td style="font-weight:500;font-size:13px;">${sp.sanPham.tenSanPham}</td>
@@ -1064,6 +1064,30 @@
                                     if (openBtn && parseInt(openBtn.getAttribute('data-cauhinh-id')) === seri.cauhinhId) {
                                         const tonSpan = row.querySelector('td:nth-child(6) span');
                                         if (tonSpan) tonSpan.textContent = remaining;
+                                        
+                                        // Cập nhật data-tonkho và hiển thị lại sản phẩm nếu có hàng
+                                        row.dataset.tonkho = remaining;
+                                        if (remaining > 0) {
+                                            // Kiểm tra các điều kiện lọc hiện tại trước khi hiển thị
+                                            const kw   = document.getElementById('productSearchInput').value.toLowerCase().trim();
+                                            const ms   = document.getElementById('filterMauSac').value.toLowerCase();
+                                            const cpu  = document.getElementById('filterCpu').value.toLowerCase();
+                                            const ram  = document.getElementById('filterRam').value.toLowerCase();
+                                            
+                                            const n   = (row.dataset.name   || '').toLowerCase();
+                                            const ma  = (row.dataset.masp   || '').toLowerCase();
+                                            const mc  = (row.dataset.mausac || '').toLowerCase();
+                                            const cp  = (row.dataset.cpu    || '').toLowerCase();
+                                            const rm  = (row.dataset.ram    || '').toLowerCase();
+                                            
+                                            const kwOk = !kw || n.includes(kw) || ma.includes(kw);
+                                            const filterOk = (!ms || mc.includes(ms)) && (!cpu || cp.includes(cpu)) && (!ram || rm.includes(ram));
+                                            
+                                            // Chỉ hiển thị nếu phù hợp với bộ lọc hiện tại
+                                            if (kwOk && filterOk) {
+                                                row.style.display = '';
+                                            }
+                                        }
                                     }
                                 });
                             }
@@ -1178,8 +1202,13 @@
                 const mc  = (row.dataset.mausac || '').toLowerCase();
                 const cp  = (row.dataset.cpu    || '').toLowerCase();
                 const rm  = (row.dataset.ram    || '').toLowerCase();
+                const tonKho = parseInt(row.dataset.tonkho || '0');
+                
+                // Chỉ hiển thị sản phẩm còn tồn kho > 0
                 const kwOk = !kw || n.includes(kw) || ma.includes(kw);
-                const ok   = kwOk && (!ms || mc.includes(ms)) && (!cpu || cp.includes(cpu)) && (!ram || rm.includes(ram));
+                const filterOk = (!ms || mc.includes(ms)) && (!cpu || cp.includes(cpu)) && (!ram || rm.includes(ram));
+                const ok   = kwOk && filterOk && tonKho > 0;
+                
                 row.style.display = ok ? '' : 'none';
                 if (ok) row.style.background = '';
             });
@@ -1209,7 +1238,11 @@
             document.getElementById('filterCpu').value = '';
             document.getElementById('filterRam').value = '';
             document.querySelectorAll('#dbProductList tr[data-name]').forEach(function(r){
-                r.style.display = ''; r.style.background = ''; r.style.outline = '';
+                const tonKho = parseInt(r.dataset.tonkho || '0');
+                // Chỉ hiển thị sản phẩm có tồn kho > 0
+                r.style.display = tonKho > 0 ? '' : 'none'; 
+                r.style.background = ''; 
+                r.style.outline = '';
             });
             clearTimeout(imeiDebounceTimer);
         });
@@ -1228,11 +1261,19 @@
                     let found = false;
                     document.querySelectorAll('#dbProductList tr[data-name]').forEach(function(r){
                         if (r.dataset.cauhinhid == data.cauhinhId) {
-                            r.style.display = '';
-                            r.style.background = '#eff6ff';
-                            r.style.outline = '2px solid var(--primary)';
-                            r.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            found = true;
+                            const tonKho = parseInt(r.dataset.tonkho || '0');
+                            // Chỉ hiển thị nếu còn tồn kho
+                            if (tonKho > 0) {
+                                r.style.display = '';
+                                r.style.background = '#eff6ff';
+                                r.style.outline = '2px solid var(--primary)';
+                                r.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                found = true;
+                            } else {
+                                r.style.display = 'none';
+                                r.style.background = '';
+                                r.style.outline = '';
+                            }
                         } else {
                             r.style.display = 'none';
                             r.style.background = '';
@@ -1241,6 +1282,7 @@
                     });
                     if (!found) {
                         document.querySelectorAll('#dbProductList tr[data-name]').forEach(function(r){ r.style.display = 'none'; });
+                        showToast('IMEI này hiện không còn hàng trong kho!', 'warning');
                     }
                 })
                 .catch(function() {});
@@ -1435,6 +1477,12 @@
                         if (btn && parseInt(btn.getAttribute('data-cauhinh-id')) === addedCauhinhId) {
                             const tonSpan = row.querySelector('td:nth-child(6) span');
                             if (tonSpan) tonSpan.textContent = remaining;
+                            
+                            // Cập nhật data-tonkho và ẩn sản phẩm nếu hết hàng
+                            row.dataset.tonkho = remaining;
+                            if (remaining <= 0) {
+                                row.style.display = 'none';
+                            }
                         }
                     });
                 }
@@ -1871,6 +1919,12 @@
                     if (btn && parseInt(btn.getAttribute('data-cauhinh-id')) === addedCauhinhId) {
                         const tonSpan = row.querySelector('td:nth-child(6) span');
                         if (tonSpan) tonSpan.textContent = remaining;
+                        
+                        // Cập nhật data-tonkho và ẩn sản phẩm nếu hết hàng
+                        row.dataset.tonkho = remaining;
+                        if (remaining <= 0) {
+                            row.style.display = 'none';
+                        }
                     }
                 });
 

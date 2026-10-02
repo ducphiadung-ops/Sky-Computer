@@ -12,7 +12,7 @@ import demo.entity.san_pham.CauHinhSanPham;
 import demo.entity.san_pham.ChiTietSanPham;
 import demo.entity.san_pham.MaSeri;
 import demo.repository.hoadon.*;
-import demo.repository.khachhang.KhachHangRepo;
+import demo.repository.khachhang.KhachHangRepository;
 import demo.repository.san_pham.ChiTietSanPhamRepository;
 import demo.repository.san_pham.MaSeriRepository;
 import jakarta.servlet.ServletException;
@@ -72,7 +72,7 @@ public class HoaDonServlet extends HttpServlet {
 
     private final HoaDonRepository hoaDonRepository         = new HoaDonRepository();
     private final HinhThucThanhToanRepo hinhThucThanhToanRepo = new HinhThucThanhToanRepo();
-    private final KhachHangRepo khachHangRepo               = new KhachHangRepo();
+    private final KhachHangRepository khachHangRepo         = new KhachHangRepository();
     private final ChiTietSanPhamRepository chiTietSanPhamRepository = new ChiTietSanPhamRepository();
     private final MaSeriRepository maSeriRepository         = new MaSeriRepository();
     private final ChiTietHoaDonRepo chiTietHoaDonRepo       = new ChiTietHoaDonRepo();
@@ -401,7 +401,7 @@ public class HoaDonServlet extends HttpServlet {
                 hd.setTenKhachHang(null);
                 hd.setSdtKhachHang(null);
             } else {
-                KhachHang kh = khachHangRepo.getOne(Integer.parseInt(idKhParam));
+                KhachHang kh = khachHangRepo.timTheoId(Integer.parseInt(idKhParam));
                 if (kh == null) { jsonErr(resp, 404, "Không tìm thấy khách hàng"); return; }
                 hd.setKhachHang(kh);
                 hd.setTenKhachHang(kh.getTenKhachHang());
@@ -977,24 +977,32 @@ public class HoaDonServlet extends HttpServlet {
         Row headerRow = sheet.createRow(0);
         headerRow.createCell(0).setCellValue("STT");
         headerRow.createCell(1).setCellValue("Mã Hóa Đơn");
-        headerRow.createCell(2).setCellValue("Khách Hàng");
-        headerRow.createCell(3).setCellValue("Số Điện Thoại");
-        headerRow.createCell(4).setCellValue("Ngày Tạo");
-        headerRow.createCell(5).setCellValue("Tổng Tiền");
-        headerRow.createCell(6).setCellValue("Trạng Thái");
+        headerRow.createCell(2).setCellValue("Mã Nhân Viên");
+        headerRow.createCell(3).setCellValue("Khách Hàng");
+        headerRow.createCell(4).setCellValue("Số Điện Thoại");
+        headerRow.createCell(5).setCellValue("Hình Thức Thanh Toán");
+        headerRow.createCell(6).setCellValue("Ngày Tạo");
+        headerRow.createCell(7).setCellValue("Tổng Tiền");
+        headerRow.createCell(8).setCellValue("Trạng Thái");
+        
         int rowNum = 1;
         for (HoaDon hd : listHoaDon) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(rowNum - 1);
             row.createCell(1).setCellValue(hd.getMaHoaDon() != null ? hd.getMaHoaDon() : "");
-            row.createCell(2).setCellValue(hd.getKhachHang() != null ? hd.getKhachHang().getTenKhachHang() : "");
-            row.createCell(3).setCellValue(hd.getKhachHang() != null ? hd.getKhachHang().getSdt() : "");
-            row.createCell(4).setCellValue(hd.getNgayLap() != null ? hd.getNgayLap().toString() : "");
-            row.createCell(5).setCellValue(hd.getTongTien() != null ? hd.getTongTien().doubleValue() : 0);
+            row.createCell(2).setCellValue(hd.getNhanVien() != null && hd.getNhanVien().getMaNhanVien() != null ? hd.getNhanVien().getMaNhanVien() : "");
+            row.createCell(3).setCellValue(hd.getKhachHang() != null ? hd.getKhachHang().getTenKhachHang() : "");
+            row.createCell(4).setCellValue(hd.getKhachHang() != null ? hd.getKhachHang().getSdt() : "");
+            row.createCell(5).setCellValue(hd.getHinhThucThanhToan() != null && hd.getHinhThucThanhToan().getTenHinhThuc() != null ? hd.getHinhThucThanhToan().getTenHinhThuc() : "");
+            row.createCell(6).setCellValue(hd.getNgayLap() != null ? hd.getNgayLap().toString() : "");
+            row.createCell(7).setCellValue(hd.getTongTien() != null ? hd.getTongTien().doubleValue() : 0);
             String trangThaiStr = (hd.getTrangThai() != null && hd.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán";
-            row.createCell(6).setCellValue(trangThaiStr);
+            row.createCell(8).setCellValue(trangThaiStr);
         }
-        for (int i = 0; i < 7; i++) sheet.autoSizeColumn(i);
+        
+        // Auto-size all columns
+        for (int i = 0; i < 9; i++) sheet.autoSizeColumn(i);
+        
         resp.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         resp.setHeader("Content-Disposition", "attachment; filename=\"DanhSachHoaDon.xlsx\"");
         workbook.write(resp.getOutputStream());

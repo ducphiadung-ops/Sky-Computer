@@ -218,22 +218,6 @@
             </div>
         </li>
 
-        <!-- QUẢN LÝ HÓA ĐƠN -->
-        <li class="nav-item">
-            <a href="${pageContext.request.contextPath}/hoa-don/hien-thi" class="nav-link-custom active"><i class="fa-solid fa-file-invoice"></i> Quản lý hóa đơn</a>
-        </li>
-
-        <!-- QUẢN LÝ KHÁCH HÀNG -->
-        <li class="nav-item">
-            <a href="${pageContext.request.contextPath}/khach-hang/hien-thi" class="nav-link-custom"><i class="fa-solid fa-users"></i> Quản lý khách hàng</a>
-        </li>
-
-        <!-- QUẢN LÝ NHÂN VIÊN -->
-        <li class="nav-item">
-            <a href="${pageContext.request.contextPath}/nhan-vien/hien-thi" class="nav-link-custom"><i class="fa-solid fa-id-badge"></i> Quản lý nhân viên</a>
-        </li>
-
-
         <!-- DROPDOWN QUẢN LÝ THUỘC TÍNH -->
         <li class="nav-item">
             <a class="nav-link-custom d-flex justify-content-between align-items-center" data-bs-toggle="collapse" role="button" aria-expanded="false">
@@ -253,6 +237,21 @@
                     <li><a href="${pageContext.request.contextPath}/thuoc-tinh/thuong-hieu/hien-thi" class="nav-link-custom"><i class="fa-solid fa-copyright me-1"></i> Thương hiệu</a></li>
                 </ul>
             </div>
+        </li>
+
+        <!-- QUẢN LÝ HÓA ĐƠN -->
+        <li class="nav-item">
+            <a href="${pageContext.request.contextPath}/hoa-don/hien-thi" class="nav-link-custom active"><i class="fa-solid fa-file-invoice"></i> Quản lý hóa đơn</a>
+        </li>
+
+        <!-- QUẢN LÝ KHÁCH HÀNG -->
+        <li class="nav-item">
+            <a href="${pageContext.request.contextPath}/khach-hang/hien-thi" class="nav-link-custom"><i class="fa-solid fa-users"></i> Quản lý khách hàng</a>
+        </li>
+
+        <!-- QUẢN LÝ NHÂN VIÊN -->
+        <li class="nav-item">
+            <a href="${pageContext.request.contextPath}/nhan-vien/hien-thi" class="nav-link-custom"><i class="fa-solid fa-id-badge"></i> Quản lý nhân viên</a>
         </li>
     </ul>
 

@@ -18,7 +18,7 @@ public class DiaChiApiMapping {
     private Integer id;
 
     // Liên kết 1-1 với bảng dia_chi_khach_hang
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_dia_chi_khach_hang")
     private DiaChiKhachHang diaChiKhachHang;
 

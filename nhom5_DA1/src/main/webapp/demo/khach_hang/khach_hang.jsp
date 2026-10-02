@@ -403,8 +403,10 @@
                     <th>Ngày sinh</th>
                     <th>Số điện thoại</th>
                     <th>Địa chỉ</th>
-                    <th class="text-center" style="width: 110px;">Trạng thái</th>
-                    <th class="text-center" style="width: 100px;">Hành động</th>
+                    <c:if test="${!isNhanVien}">
+                        <th class="text-center" style="width: 110px;">Trạng thái</th>
+                        <th class="text-center" style="width: 100px;">Hành động</th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody>
@@ -412,7 +414,7 @@
                 <c:forEach items="${listKH}" var="kh" varStatus="status">
                     <!-- Tự động làm tối dòng từ đầu nếu khách hàng ở trạng thái false (ngừng hoạt động) -->
                     <tr class="${kh.trangThai == 1 ? '' : 'row-inactive'}">
-                        <td>${status.index + 1}</td>
+                        <td>${(currentPage - 1) * 10 + status.index + 1}</td>
 
                         <td><span class="cust-code">${kh.maKhachHang}</span></td>
 
@@ -460,37 +462,32 @@
                             </c:choose>
                         </td>
 
-                        <td class="text-center">
-                            <div class="switch-wrapper">
-                                <label class="switch">
-                                    <input type="checkbox"
-                                        ${kh.trangThai == 1 ? 'checked' : ''}
-                                           onchange="doiTrangThai(${kh.id}, this.checked, this)">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </td>
+                        <c:if test="${!isNhanVien}">
+                            <td class="text-center">
+                                <div class="switch-wrapper">
+                                    <label class="switch">
+                                        <input type="checkbox"
+                                            ${kh.trangThai == 1 ? 'checked' : ''}
+                                               onchange="doiTrangThai(${kh.id}, this.checked, this)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </td>
 
-                        <td class="text-center">
-                            <div class="table-actions">
-                                <a href="${pageContext.request.contextPath}/khach-hang/sua?id=${kh.id}" class="btn-icon btn-edit" title="Sửa thông tin">
+                            <td class="text-center">
+                                <a href="${pageContext.request.contextPath}/khach-hang/sua?id=${kh.id}" 
+                                   class="btn-icon btn-edit" 
+                                   title="Sửa thông tin">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
-
-                                <a href="${pageContext.request.contextPath}/khach-hang/xoa?id=${kh.id}"
-                                   class="btn-icon btn-delete"
-                                   title="Xóa khách hàng"
-                                   onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này khỏi hệ thống?');">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
+                            </td>
+                        </c:if>
                     </tr>
                 </c:forEach>
 
                 <c:if test="${empty listKH}">
                     <tr>
-                        <td colspan="9" class="text-center" style="padding: 40px; color: var(--text-muted)">
+                        <td colspan="${isNhanVien ? '7' : '9'}" class="text-center" style="padding: 40px; color: var(--text-muted)">
                             Không có dữ liệu khách hàng nào tồn tại trên hệ thống.
                         </td>
                     </tr>
@@ -500,12 +497,35 @@
             </table>
 
             <div class="pagination-area">
-                <div class="page-info">Hiển thị thông tin dữ liệu khách hàng Skycomputer</div>
+                <div class="page-info">
+                    Hiển thị ${(currentPage - 1) * 10 + 1} - ${(currentPage - 1) * 10 + fn:length(listKH)} 
+                    trong tổng số ${totalRecords} khách hàng
+                </div>
                 <ul class="pagination">
-                    <li class="page-item"><i class="fa-solid fa-chevron-left"></i></li>
-                    <li class="page-item active">1</li>
-                    <li class="page-item">2</li>
-                    <li class="page-item"><i class="fa-solid fa-chevron-right"></i></li>
+                    <c:if test="${currentPage > 1}">
+                        <li class="page-item" onclick="chuyenTrang(${currentPage - 1})">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </li>
+                    </c:if>
+                    
+                    <c:forEach begin="1" end="${totalPages}" var="i">
+                        <c:if test="${i == 1 || i == totalPages || (i >= currentPage - 2 && i <= currentPage + 2)}">
+                            <li class="page-item ${i == currentPage ? 'active' : ''}" 
+                                onclick="chuyenTrang(${i})">${i}</li>
+                        </c:if>
+                        <c:if test="${i == currentPage - 3 && currentPage > 4}">
+                            <li class="page-item" style="pointer-events: none;">...</li>
+                        </c:if>
+                        <c:if test="${i == currentPage + 3 && currentPage < totalPages - 3}">
+                            <li class="page-item" style="pointer-events: none;">...</li>
+                        </c:if>
+                    </c:forEach>
+                    
+                    <c:if test="${currentPage < totalPages}">
+                        <li class="page-item" onclick="chuyenTrang(${currentPage + 1})">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </li>
+                    </c:if>
                 </ul>
             </div>
         </div>
@@ -546,6 +566,12 @@
                 element.checked = !trangThai;
                 row.classList.toggle('row-inactive');
             });
+    }
+
+    function chuyenTrang(page) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', page);
+        window.location.href = url.toString();
     }
 </script>
 

@@ -90,11 +90,40 @@ public class NhanVienServlet extends HttpServlet {
                          || (chucVu   != null && !chucVu.trim().isEmpty())
                          || (trangThai != null && !trangThai.trim().isEmpty());
 
+            java.util.List<NhanVien> danhSachFull;
             if (coLoc) {
-                request.setAttribute("listNV", service.filter(tuKhoa, chucVu, trangThai));
+                danhSachFull = service.filter(tuKhoa, chucVu, trangThai);
             } else {
-                request.setAttribute("listNV", service.getAll());
+                danhSachFull = service.getAll();
             }
+
+            // Phân trang
+            int pageSize = 10; // Số nhân viên mỗi trang
+            int currentPage = 1;
+            String pageParam = request.getParameter("page");
+            if (pageParam != null && !pageParam.isEmpty()) {
+                try {
+                    currentPage = Integer.parseInt(pageParam);
+                    if (currentPage < 1) currentPage = 1;
+                } catch (NumberFormatException e) {
+                    currentPage = 1;
+                }
+            }
+
+            int totalRecords = danhSachFull.size();
+            int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+            if (totalPages < 1) totalPages = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            int startIndex = (currentPage - 1) * pageSize;
+            int endIndex = Math.min(startIndex + pageSize, totalRecords);
+
+            java.util.List<NhanVien> danhSachTrang = danhSachFull.subList(startIndex, endIndex);
+
+            request.setAttribute("listNV", danhSachTrang);
+            request.setAttribute("currentPage", currentPage);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("totalRecords", totalRecords);
 
             // Giữ lại giá trị bộ lọc để JSP hiển thị lại
             request.setAttribute("filterTuKhoa",   tuKhoa   != null ? tuKhoa   : "");

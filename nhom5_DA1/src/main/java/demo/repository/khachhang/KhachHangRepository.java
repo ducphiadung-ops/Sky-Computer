@@ -15,7 +15,6 @@ public class KhachHangRepository {
         List<KhachHang> list = session.createQuery(
                 "SELECT DISTINCT kh FROM KhachHang kh " +
                 "LEFT JOIN FETCH kh.diaChiKhachHang " +
-                "WHERE kh.trangThai = 1 " +
                 "ORDER BY kh.id DESC", 
                 KhachHang.class
         ).getResultList();
@@ -166,12 +165,15 @@ public class KhachHangRepository {
         Transaction transaction = null;
 
         try{
+            System.out.println("[KhachHangRepository] Bắt đầu cập nhật khách hàng ID: " + kh.getId());
             transaction = session.beginTransaction();
 
             // Xóa toàn bộ địa chỉ cũ của khách hàng trước khi ghi địa chỉ mới
             // (orphanRemoval trên entity sẽ xử lý, nhưng cần load đúng managed entity)
             KhachHang managed = session.find(KhachHang.class, kh.getId());
             if (managed != null) {
+                System.out.println("[KhachHangRepository] Tìm thấy khách hàng: " + managed.getTenKhachHang());
+                
                 // Cập nhật các field thông tin chung
                 managed.setMaKhachHang(kh.getMaKhachHang());
                 managed.setTenKhachHang(kh.getTenKhachHang());
@@ -181,27 +183,39 @@ public class KhachHangRepository {
                 managed.setEmail(kh.getEmail());
                 managed.setTrangThai(kh.getTrangThai());
 
+                System.out.println("[KhachHangRepository] Đã cập nhật thông tin cơ bản");
+                System.out.println("[KhachHangRepository] Số địa chỉ cũ: " + managed.getDiaChiKhachHangList().size());
+
                 // Xóa địa chỉ cũ, thêm địa chỉ mới (orphanRemoval tự xóa DB)
                 managed.getDiaChiKhachHangList().clear();
+                System.out.println("[KhachHangRepository] Đã xóa địa chỉ cũ");
 
                 if (kh.getDiaChiKhachHangList() != null) {
+                    System.out.println("[KhachHangRepository] Số địa chỉ mới: " + kh.getDiaChiKhachHangList().size());
                     for (demo.entity.khach_hang.DiaChiKhachHang dc : kh.getDiaChiKhachHangList()) {
                         dc.setKhachHang(managed);
                         managed.getDiaChiKhachHangList().add(dc);
+                        System.out.println("[KhachHangRepository] Thêm địa chỉ: " + dc.getDiaChiCuThe());
                     }
                 }
+            } else {
+                System.out.println("[KhachHangRepository] KHÔNG tìm thấy khách hàng ID: " + kh.getId());
             }
 
             transaction.commit();
+            System.out.println("[KhachHangRepository] ✅ Commit transaction thành công!");
 
         }catch (Exception e){
+            System.out.println("[KhachHangRepository] ❌ LỖI khi cập nhật: " + e.getMessage());
             if(transaction != null){
                 transaction.rollback();
+                System.out.println("[KhachHangRepository] Đã rollback transaction");
             }
             e.printStackTrace();
 
         }finally {
             session.close();
+            System.out.println("[KhachHangRepository] Đã đóng session");
         }
     }
     // Kiểm tra SĐT đã tồn tại chưa (bỏ qua theo id khi update)

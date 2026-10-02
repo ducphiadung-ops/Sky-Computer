@@ -70,11 +70,40 @@ public class KhachHangServlet extends HttpServlet {
                          || (gioiTinh  != null && !gioiTinh.trim().isEmpty())
                          || (trangThai != null && !trangThai.trim().isEmpty());
 
+            List<KhachHang> danhSachFull;
             if (coLoc) {
-                req.setAttribute("listKH", service.filter(tuKhoa, gioiTinh, trangThai));
+                danhSachFull = service.filter(tuKhoa, gioiTinh, trangThai);
             } else {
-                req.setAttribute("listKH", service.getAll());
+                danhSachFull = service.getAll();
             }
+
+            // Phân trang
+            int pageSize = 10; // Số khách hàng mỗi trang
+            int currentPage = 1;
+            String pageParam = req.getParameter("page");
+            if (pageParam != null && !pageParam.isEmpty()) {
+                try {
+                    currentPage = Integer.parseInt(pageParam);
+                    if (currentPage < 1) currentPage = 1;
+                } catch (NumberFormatException e) {
+                    currentPage = 1;
+                }
+            }
+
+            int totalRecords = danhSachFull.size();
+            int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+            if (totalPages < 1) totalPages = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            int startIndex = (currentPage - 1) * pageSize;
+            int endIndex = Math.min(startIndex + pageSize, totalRecords);
+
+            List<KhachHang> danhSachTrang = danhSachFull.subList(startIndex, endIndex);
+
+            req.setAttribute("listKH", danhSachTrang);
+            req.setAttribute("currentPage", currentPage);
+            req.setAttribute("totalPages", totalPages);
+            req.setAttribute("totalRecords", totalRecords);
 
             // Giữ lại giá trị bộ lọc để JSP hiển thị lại
             req.setAttribute("filterTuKhoa",   tuKhoa   != null ? tuKhoa   : "");
@@ -265,13 +294,24 @@ public class KhachHangServlet extends HttpServlet {
         // =====================================================================
         if (uri.contains("cap-nhat")) {
 
-            Integer id = Integer.valueOf(req.getParameter("id"));
-            KhachHang kh = service.timTheoId(id);
+            try {
+                String idParam = req.getParameter("id");
+                System.out.println("[KhachHangServlet] Bắt đầu cập nhật khách hàng ID: " + idParam);
+                
+                Integer id = Integer.valueOf(idParam);
+                KhachHang kh = service.timTheoId(id);
 
-            if (kh != null) {
+                if (kh == null) {
+                    System.out.println("[KhachHangServlet] Không tìm thấy khách hàng với ID: " + id);
+                    resp.sendRedirect(req.getContextPath() + "/khach-hang/hien-thi");
+                    return;
+                }
+
                 String ten   = chuanHoaTen(req.getParameter("tenKhachHang"));
                 String sdt   = req.getParameter("sdt")   != null ? req.getParameter("sdt").trim()   : "";
                 String email = req.getParameter("email") != null ? req.getParameter("email").trim() : "";
+
+                System.out.println("[KhachHangServlet] Thông tin nhận được - Tên: " + ten + ", SĐT: " + sdt);
 
                 // Validate tên
                 if (ten.isEmpty()) {
@@ -346,6 +386,7 @@ public class KhachHangServlet extends HttpServlet {
 
                 List<DiaChiKhachHang> danhSachMoi = new ArrayList<>();
                 if (dsDiaChiCuThe != null) {
+                    System.out.println("[KhachHangServlet] Số địa chỉ nhận được: " + dsDiaChiCuThe.length);
                     for (int i = 0; i < dsDiaChiCuThe.length; i++) {
                         if (dsDiaChiCuThe[i] == null || dsDiaChiCuThe[i].trim().isEmpty()) continue;
 
@@ -369,7 +410,11 @@ public class KhachHangServlet extends HttpServlet {
                         mapping.setDiaChiKhachHang(dc);
                         dc.setDiaChiApiMapping(mapping);
                         danhSachMoi.add(dc);
+                        
+                        System.out.println("[KhachHangServlet] Địa chỉ " + (i+1) + ": " + dc.getDiaChiCuThe());
                     }
+                } else {
+                    System.out.println("[KhachHangServlet] Không có địa chỉ nào được gửi lên");
                 }
 
                 if (kh.getDiaChiKhachHangList() != null) {
@@ -379,7 +424,13 @@ public class KhachHangServlet extends HttpServlet {
                     kh.setDiaChiKhachHang(danhSachMoi);
                 }
 
+                System.out.println("[KhachHangServlet] Gọi service.capNhat()...");
                 service.capNhat(kh);
+                System.out.println("[KhachHangServlet] ✅ Hoàn tất cập nhật, redirect về danh sách");
+                resp.sendRedirect(req.getContextPath() + "/khach-hang/hien-thi");
+            } catch (Exception e) {
+                System.out.println("[KhachHangServlet] ❌ LỖI trong quá trình cập nhật: " + e.getMessage());
+                e.printStackTrace();
                 resp.sendRedirect(req.getContextPath() + "/khach-hang/hien-thi");
             }
         }

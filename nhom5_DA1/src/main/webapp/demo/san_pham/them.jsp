@@ -652,8 +652,8 @@
                         '               <th>TÊN BIẾN THỂ SẢN PHẨM</th>' +
                         '               <th>MÀU SẮC</th>' +
                         '               <th style="width:180px;">QUÉT SỐ IMEI (SỐ LƯỢNG)</th>' +
-                        '               <th style="width:180px;">ĐƠN GIÁ BÁN (VND)</th>' +
-                        '               <th style="width:180px;">GIÁ NHẬP KHO (VND)</th>' +
+                        '               <th style="width:180px;">GIÁ BÁN (VND)</th>' +
+                        '               <th style="width:180px;">GIÁ NHẬP(VND)</th>' +
                         '               <th style="width:80px;">HÀNH ĐỘNG</th>' +
                         '           </tr>' +
                         '       </thead>' +

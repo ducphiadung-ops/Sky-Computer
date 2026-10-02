@@ -12,7 +12,7 @@
         // Hiển thị
         public List<NhanVien> getAll() {
             Session session = HibernateConfig.getFACTORY().openSession();
-            List<NhanVien> list = session.createQuery("FROM NhanVien WHERE trangThai = 1 ORDER BY id DESC", NhanVien.class).getResultList();
+            List<NhanVien> list = session.createQuery("FROM NhanVien ORDER BY id DESC", NhanVien.class).getResultList();
             session.close();
             return list;
         }

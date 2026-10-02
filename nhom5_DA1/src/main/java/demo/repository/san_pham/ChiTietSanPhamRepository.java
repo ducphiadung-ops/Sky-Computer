@@ -311,7 +311,7 @@ public class ChiTietSanPhamRepository {
             if (idRam != null)
                 hql.append(" AND ch.ram.id = :idRam");
             if (idOCung != null)
-                hql.append(" AND ch.oCung.id = :idOCung");
+                hql.append(" AND ch.OCung.id = :idOCung");
             if (trangThai != null)
                 hql.append(" AND ct.trangThai = :trangThai");
             if (giaMin != null)
